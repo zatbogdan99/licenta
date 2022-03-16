@@ -1,12 +1,15 @@
 package com.licenta.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.List;
 
-@Entity(name = "PROCESSOR")
-public class PROCESSOR {
+@Entity
+@Table(name = "PROCESSOR")
+public class Processor implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
     @Column(name = "PRODUCER")
     private String producer;

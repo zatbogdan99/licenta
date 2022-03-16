@@ -1,12 +1,17 @@
 package com.licenta.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import lombok.Data;
 
-@Entity(name = "LAPTOP")
-public class Laptop {
+import javax.persistence.*;
+import java.io.Serializable;
+
+@Entity
+@Table(name = "LAPTOP")
+//@Data
+public class Laptop implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
     @Column(name = "NAME")
     private String name;
@@ -14,8 +19,9 @@ public class Laptop {
     private Long guarantee;
     @Column(name = "DISPLAY")
     private Long display;
-    @Column (name = "PROCESSOR")
-    private Long processor;
+    @OneToOne
+    @JoinColumn(name = "PROCESSOR_ID", foreignKey = @ForeignKey(name = "LAPTOP_PROCESSOR_ID_FK"))
+    private Processor processor;
     @Column (name = "RAM_TOTAL")
     private Long ram_total;
     @Column (name = "RAM_TYPE")
@@ -59,11 +65,11 @@ public class Laptop {
         this.display = display;
     }
 
-    public Long getProcessor() {
+    public Processor getProcessor() {
         return processor;
     }
 
-    public void setProcessor(Long processor) {
+    public void setProcessor(Processor processor) {
         this.processor = processor;
     }
 

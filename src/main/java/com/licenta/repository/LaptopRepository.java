@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface LaptopRepository extends JpaRepository<Laptop, Long> {
-    List<Laptop> getAllByIdNotNull();
-
-    @Query("SELECT l from LAPTOP l")
-    List<Laptop> getAllLaptops();
+//    List<Laptop> getAllByIdNotNull();
+//
+//    @Query("SELECT l from LAPTOP l")
+//    List<Laptop> getAllLaptops();
 }
