@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "LAPTOP")
-//@Data
+@Data
 public class Laptop implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,8 +17,9 @@ public class Laptop implements Serializable {
     private String name;
     @Column(name = "GUARANTEE")
     private Long guarantee;
-    @Column(name = "DISPLAY")
-    private Long display;
+    @OneToOne
+    @JoinColumn(name = "DISPLAY_ID", foreignKey = @ForeignKey(name = "LAPTOP_DISPLAY_ID_FK"))
+    private Display display;
     @OneToOne
     @JoinColumn(name = "PROCESSOR_ID", foreignKey = @ForeignKey(name = "LAPTOP_PROCESSOR_ID_FK"))
     private Processor processor;
@@ -38,119 +39,7 @@ public class Laptop implements Serializable {
     private String storage_interface;
     @Column (name = "STORAGE_FORM_FACTOR")
     private Long storage_form_factor;
-    @Column (name = "GRAPHICS_CARD")
-    private Long graphics_card;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getGuarantee() {
-        return guarantee;
-    }
-
-    public void setGuarantee(Long guarantee) {
-        this.guarantee = guarantee;
-    }
-
-    public Long getDisplay() {
-        return display;
-    }
-
-    public void setDisplay(Long display) {
-        this.display = display;
-    }
-
-    public Processor getProcessor() {
-        return processor;
-    }
-
-    public void setProcessor(Processor processor) {
-        this.processor = processor;
-    }
-
-    public Long getRam_total() {
-        return ram_total;
-    }
-
-    public void setRam_total(Long ram_total) {
-        this.ram_total = ram_total;
-    }
-
-    public String getRam_type() {
-        return ram_type;
-    }
-
-    public void setRam_type(String ram_type) {
-        this.ram_type = ram_type;
-    }
-
-    public Long getRam_frequency() {
-        return ram_frequency;
-    }
-
-    public void setRam_frequency(Long ram_frequency) {
-        this.ram_frequency = ram_frequency;
-    }
-
-    public Long getRam_slots() {
-        return ram_slots;
-    }
-
-    public void setRam_slots(Long ram_slots) {
-        this.ram_slots = ram_slots;
-    }
-
-    public String getStorage() {
-        return storage;
-    }
-
-    public void setStorage(String storage) {
-        this.storage = storage;
-    }
-
-    public Long getStorage_capacity() {
-        return storage_capacity;
-    }
-
-    public void setStorage_capacity(Long storage_capacity) {
-        this.storage_capacity = storage_capacity;
-    }
-
-    public String getStorage_interface() {
-        return storage_interface;
-    }
-
-    public void setStorage_interface(String storage_interface) {
-        this.storage_interface = storage_interface;
-    }
-
-    public Long getStorage_form_factor() {
-        return storage_form_factor;
-    }
-
-    public void setStorage_form_factor(Long storage_form_factor) {
-        this.storage_form_factor = storage_form_factor;
-    }
-
-    public Long getGraphics_card() {
-        return graphics_card;
-    }
-
-    public void setGraphics_card(Long graphics_card) {
-        this.graphics_card = graphics_card;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Id
-    public Long getId() {
-        return id;
-    }
+    @OneToOne
+    @JoinColumn(name = "GRAPHICS_CARD_ID", foreignKey = @ForeignKey(name = "LAPTOP_GRAPHICS_CARD_ID_PK"))
+    private GraphicsCard graphics_card;
 }

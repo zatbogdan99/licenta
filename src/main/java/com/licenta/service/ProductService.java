@@ -11,12 +11,12 @@ import java.util.List;
 @Service
 public class ProductService {
 
-//    @Autowired
-//    LaptopRepository laptopRepository;
-//
-//    public List<Laptop> getAllLaptops() {
-//        List<Laptop> laptops = new ArrayList<>();
-//        laptops = laptopRepository.getAllLaptops();
-//        return laptops;
-//    }
+    @Autowired
+    LaptopRepository laptopRepository;
+
+    public List<Laptop> getAllLaptops() {
+        List<Laptop> laptops = new ArrayList<>();
+        laptops = laptopRepository.getAllLaptops();
+        return laptops;
+    }
 }

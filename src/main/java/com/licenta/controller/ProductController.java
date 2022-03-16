@@ -12,11 +12,11 @@ import java.util.List;
 
 @RestController
 public class ProductController {
-//    @Autowired
-//    ProductService productService;
-//
-//    @GetMapping()
-//    public List<Laptop> loadProducts() {
-//        return productService.getAllLaptops();
-//    }
+    @Autowired
+    ProductService productService;
+
+    @GetMapping()
+    public List<Laptop> loadProducts() {
+        return productService.getAllLaptops();
+    }
 }
