@@ -22,4 +22,6 @@ public class GraphicsCard implements Serializable {
     private Long capacity;
 
     private String technology;
+
+    private String name;
 }
