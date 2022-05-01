@@ -1,10 +1,13 @@
 package com.licenta.dto;
 
+import java.sql.Blob;
+
 public class ProductDTO {
     private String name;
     private String description;
     private String productType;
     private Long price;
+    private String photo;
 
     public String getName() {
         return name;
@@ -36,5 +39,13 @@ public class ProductDTO {
 
     public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 }

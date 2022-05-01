@@ -1,9 +1,6 @@
 package com.licenta.service;
 
-import com.licenta.dto.LaptopDTO;
-import com.licenta.dto.ProductDTO;
-import com.licenta.dto.SaveGraphicsCardDTO;
-import com.licenta.dto.SaveLaptopModel;
+import com.licenta.dto.*;
 import com.licenta.model.GraphicsCard;
 import com.licenta.model.Laptop;
 import com.licenta.model.Processor;
@@ -11,11 +8,17 @@ import com.licenta.repository.DisplayRepository;
 import com.licenta.repository.GraphicsCardRepository;
 import com.licenta.repository.LaptopRepository;
 import com.licenta.repository.ProcessorRepository;
+import org.aspectj.util.FileUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -42,13 +45,21 @@ public class ProductService {
 
         laptops.forEach(laptop -> {
             LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
+            try {
+                if (laptop.getPhoto() != null) {
+                    byte[] imageByte = laptop.getPhoto().getBinaryStream().readAllBytes();
+                    laptopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                }
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
+            }
             System.out.println(laptopDTO);
             products.add(LaptopDTO.toProduct(laptopDTO));
         });
         return products;
     }
 
-    public void saveLaptop(SaveLaptopModel saveLaptopModel) {
+    public void saveLaptop(SaveLaptopModel saveLaptopModel) throws SQLException {
         Laptop laptop = new Laptop();
         laptop.setName(saveLaptopModel.getName());
         laptop.setPrice(saveLaptopModel.getPrice());
@@ -67,6 +78,16 @@ public class ProductService {
         laptop.setStorageInterface(laptop.getStorageInterface());
         laptop.setGraphicsCard(graphicsCardRepository.getById(saveLaptopModel.getGraphicsCard()));
         laptop.setStorageInterface(saveLaptopModel.getStorageInterface());
+        String partSeparator = ",";
+        byte[] decodedBytes;
+        if (saveLaptopModel.getPhotos()[0].contains(partSeparator)) {
+            String encodedImg = saveLaptopModel.getPhotos()[0].split(partSeparator)[1];
+            decodedBytes = Base64.getDecoder().decode(encodedImg);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(saveLaptopModel.getPhotos()[0]);
+        }
+        Blob blob = new SerialBlob(decodedBytes);
+        laptop.setPhoto(blob);
 
         laptopRepository.save(laptop);
     }
@@ -81,5 +102,10 @@ public class ProductService {
         graphicsCard.setName(graphicsCardDTO.getName());
 
         graphicsCardRepository.save(graphicsCard);
+    }
+
+    public void saveProcessor(SaveProcessorDTO processorDTO) {
+        Processor processor = modelMapper.map(processorDTO, Processor.class);
+        processorRepository.save(processor);
     }
 }

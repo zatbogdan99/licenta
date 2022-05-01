@@ -18,6 +18,7 @@ public class SaveLaptopModel {
     private Long storageFormFactor;
     private Long graphicsCard;
     private Long price;
+    private String[] photos;
 
     public Long getId() {
         return id;
@@ -137,5 +138,13 @@ public class SaveLaptopModel {
 
     public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public String[] getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(String[] photos) {
+        this.photos = photos;
     }
 }

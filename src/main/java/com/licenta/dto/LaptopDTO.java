@@ -5,6 +5,8 @@ import com.licenta.model.Display;
 import com.licenta.model.GraphicsCard;
 import com.licenta.model.Processor;
 
+import java.sql.Blob;
+
 
 public class LaptopDTO {
     private Long id;
@@ -22,6 +24,15 @@ public class LaptopDTO {
     private Long storageFormFactor;
     private GraphicsCard graphicsCard;
     private Long price;
+    private String photo;
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
 
     public Long getPrice() {
         return price;
@@ -153,6 +164,7 @@ public class LaptopDTO {
                 + laptopDTO.getStorage() + " RAM " + laptopDTO.getRamType() + ", Placa video " + laptopDTO.getGraphicsCard().getType() + " "
                 + laptopDTO.getGraphicsCard().getModel() + " " + laptopDTO.getGraphicsCard().getCapacity());
         productDTO.setPrice(laptopDTO.getPrice());
+        productDTO.setPhoto(laptopDTO.getPhoto());
 
         return productDTO;
     }

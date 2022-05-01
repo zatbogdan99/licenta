@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Blob;
 
 @Entity
 @Table(name = "LAPTOP")
@@ -34,4 +35,6 @@ public class Laptop implements Serializable {
     @OneToOne
     @JoinColumn(name = "GRAPHICS_CARD_ID", foreignKey = @ForeignKey(name = "LAPTOP_GRAPHICS_CARD_ID_PK"))
     private GraphicsCard graphicsCard;
+    @Lob
+    private Blob photo;
 }
