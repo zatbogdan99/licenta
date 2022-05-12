@@ -1,9 +1,7 @@
 package com.licenta.controller;
 
-import com.licenta.dto.ProductDTO;
-import com.licenta.dto.SaveGraphicsCardDTO;
-import com.licenta.dto.SaveLaptopModel;
-import com.licenta.dto.SaveProcessorDTO;
+import com.licenta.dto.*;
+import com.licenta.model.Laptop;
 import com.licenta.repository.LaptopRepository;
 import com.licenta.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +19,11 @@ public class ProductController {
     @GetMapping()
     public List<ProductDTO> loadProducts() {
         return productService.getAllProducts();
+    }
+
+    @PostMapping("/get-laptop")
+    public LaptopDTO getLaptop(@RequestBody Long id) {
+        return productService.getLaptop(id);
     }
 
     @PostMapping("/save-laptop")

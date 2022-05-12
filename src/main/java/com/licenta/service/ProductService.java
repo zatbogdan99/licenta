@@ -108,4 +108,10 @@ public class ProductService {
         Processor processor = modelMapper.map(processorDTO, Processor.class);
         processorRepository.save(processor);
     }
+
+    public LaptopDTO getLaptop(Long id) {
+        Laptop laptop = laptopRepository.getById(id);
+        LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
+        return laptopDTO;
+    }
 }

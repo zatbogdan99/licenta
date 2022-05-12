@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.sql.Blob;
 
 @Entity
-@Table(name = "LAPTOP")
 @Data
 public class Laptop implements Serializable {
     @Id

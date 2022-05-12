@@ -160,11 +160,12 @@ public class LaptopDTO {
         productDTO.setProductType(Constants.ProductType.LAPTOP.getValue());
         productDTO.setDescription(Constants.ProductType.LAPTOP.getValue() + " " + laptopDTO.getName() + ", "
                 + "Processor " + laptopDTO.getProcessor().getProducer() + " " + laptopDTO.getProcessor().getName() + " "
-                + laptopDTO.getProcessor().getFamily() + " " + laptopDTO.getProcessor().getModel() + " "
-                + laptopDTO.getStorage() + " RAM " + laptopDTO.getRamType() + ", Placa video " + laptopDTO.getGraphicsCard().getType() + " "
-                + laptopDTO.getGraphicsCard().getModel() + " " + laptopDTO.getGraphicsCard().getCapacity());
+                + laptopDTO.getProcessor().getModel() + ", " + laptopDTO.getStorage() + ", RAM " + laptopDTO.getRamType()
+                + ", Placa video " + laptopDTO.getGraphicsCard().getType() + " " + laptopDTO.getGraphicsCard().getModel()
+                + " " + laptopDTO.getGraphicsCard().getCapacity() + " Gb");
         productDTO.setPrice(laptopDTO.getPrice());
         productDTO.setPhoto(laptopDTO.getPhoto());
+        productDTO.setId(laptopDTO.getId());
 
         return productDTO;
     }
