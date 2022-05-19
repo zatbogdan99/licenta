@@ -15,6 +15,18 @@ public class ProcessorDTO {
     private Long technology;
     private String integratedGraphics;
 
+    public static ProductDTO toProduct(ProcessorDTO processorDTO) {
+        ProductDTO productDTO = new ProductDTO();
+
+        productDTO.setName(processorDTO.getName());
+        productDTO.setProductType("Processor");
+        productDTO.setDescription(processorDTO.getProducer() + " " + processorDTO.getName() + " " +
+                processorDTO.getModel() + ", " +  processorDTO.getBaseFrequency() + "Ghz, " + processorDTO.getCores() + " cores, " +
+                processorDTO.getThreads() + " threads");
+
+        return productDTO;
+    }
+
     public Long getId() {
         return id;
     }

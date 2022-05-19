@@ -20,6 +20,15 @@ public class ProductController {
     public List<ProductDTO> loadProducts() {
         return productService.getAllProducts();
     }
+    @GetMapping("/get-displays")
+    public List<ProductDTO> getDisplays() {
+        return productService.getDisplays();
+    }
+
+    @GetMapping("/get-processors")
+    public List<ProductDTO> getProcessors() {
+        return productService.getProcessors();
+    }
 
     @PostMapping("/get-laptop")
     public LaptopDTO getLaptop(@RequestBody Long id) {
@@ -39,5 +48,10 @@ public class ProductController {
     @PostMapping("/save-processor")
     void saveProcessor(@RequestBody SaveProcessorDTO processorDTO) {
         productService.saveProcessor(processorDTO);
+    }
+
+    @PostMapping("/save-display")
+    void saveDisplay(@RequestBody SaveDisplayDTO displayDTO) {
+        productService.saveDisplay(displayDTO);
     }
 }

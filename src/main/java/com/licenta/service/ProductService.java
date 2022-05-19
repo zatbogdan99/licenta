@@ -1,6 +1,7 @@
 package com.licenta.service;
 
 import com.licenta.dto.*;
+import com.licenta.model.Display;
 import com.licenta.model.GraphicsCard;
 import com.licenta.model.Laptop;
 import com.licenta.model.Processor;
@@ -59,6 +60,31 @@ public class ProductService {
         return products;
     }
 
+    public List<ProductDTO> getDisplays() {
+        List<Display> displays = displayRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
+
+        displays.forEach(display -> {
+            DisplayDTO displayDTO = modelMapper.map(display, DisplayDTO.class);
+
+            products.add(DisplayDTO.toProduct(displayDTO));
+        });
+        return products;
+    }
+
+    public List<ProductDTO> getProcessors() {
+        List<Processor> processors = processorRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
+
+        processors.forEach(processor -> {
+            ProcessorDTO processorDTO = modelMapper.map(processor, ProcessorDTO.class);
+
+            products.add(ProcessorDTO.toProduct(processorDTO));
+        });
+
+        return products;
+    }
+
     public void saveLaptop(SaveLaptopModel saveLaptopModel) throws SQLException {
         Laptop laptop = new Laptop();
         laptop.setName(saveLaptopModel.getName());
@@ -113,5 +139,10 @@ public class ProductService {
         Laptop laptop = laptopRepository.getById(id);
         LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
         return laptopDTO;
+    }
+
+    public void saveDisplay(SaveDisplayDTO displayDTO) {
+        Display display = modelMapper.map(displayDTO, Display.class);
+        displayRepository.save(display);
     }
 }

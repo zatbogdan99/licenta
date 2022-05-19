@@ -1,15 +1,19 @@
 package com.licenta.dto;
 
-public class DisplayDTO {
+public class SaveDisplayDTO {
     private Long id;
-    private Long screenSize;
-    private String resolution;
-    private String technology;
-    private Long gsync;
-    private Long freesync;
-    private Long refreshRate;
-    private Long brightness;
 
+    private Long screenSize;
+
+    private String resolution;
+
+    private Long gsync;
+
+    private Long freesync;
+
+    private Long refreshRate;
+
+    private Long brightness;
 
     public Long getId() {
         return id;
@@ -33,14 +37,6 @@ public class DisplayDTO {
 
     public void setResolution(String resolution) {
         this.resolution = resolution;
-    }
-
-    public String getTechnology() {
-        return technology;
-    }
-
-    public void setTechnology(String technology) {
-        this.technology = technology;
     }
 
     public Long getGsync() {
@@ -73,18 +69,5 @@ public class DisplayDTO {
 
     public void setBrightness(Long brightness) {
         this.brightness = brightness;
-    }
-
-    public static ProductDTO toProduct(DisplayDTO displayDTO) {
-        ProductDTO productDTO = new ProductDTO();
-
-        productDTO.setId(displayDTO.getId());
-        productDTO.setName("Display");
-        productDTO.setProductType("Display");
-        productDTO.setDescription("Rezolutie: " + displayDTO.getResolution() +
-                ", " + displayDTO.getScreenSize() + " ″" +
-                ", Refresh rate: " + displayDTO.getRefreshRate());
-
-        return productDTO;
     }
 }
