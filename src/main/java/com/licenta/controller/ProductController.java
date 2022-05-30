@@ -54,4 +54,9 @@ public class ProductController {
     void saveDisplay(@RequestBody SaveDisplayDTO displayDTO) {
         productService.saveDisplay(displayDTO);
     }
+
+    @PostMapping("/update-products")
+    public List<ProductDTO> updateProducts(@RequestBody FilterDTO filterDTO) {
+        return productService.updateProducts(filterDTO);
+    }
 }

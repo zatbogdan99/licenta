@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
@@ -144,5 +145,51 @@ public class ProductService {
     public void saveDisplay(SaveDisplayDTO displayDTO) {
         Display display = modelMapper.map(displayDTO, Display.class);
         displayRepository.save(display);
+    }
+
+    public List<ProductDTO> updateProducts(FilterDTO filterDTO) {
+        List<Laptop> laptops = laptopRepository.getAllLaptops();
+        List<ProductDTO> products = new ArrayList<>();
+
+        laptops.stream().filter(laptop -> applyFilters(filterDTO, laptop)).forEach(laptop -> {
+            LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
+            try {
+                if (laptop.getPhoto() != null) {
+                    byte[] imageByte = laptop.getPhoto().getBinaryStream().readAllBytes();
+                    laptopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                }
+            } catch (IOException | SQLException e) {
+                e.printStackTrace();
+            }
+            System.out.println(laptopDTO);
+            products.add(LaptopDTO.toProduct(laptopDTO));
+        });
+        return products;
+    }
+
+    private boolean applyFilters(FilterDTO filterDTO, Laptop laptop) {
+        if (laptop.getPrice() > filterDTO.getMaxRange() || laptop.getPrice() < filterDTO.getMinRange()) {
+            return false;
+        }
+        if (filterDTO.getRam() != null && filterDTO.getRam().length > 0) {
+            if (Arrays.stream(filterDTO.getRam()).noneMatch(ram -> ram.equals(laptop.getRamType()))) {
+                return false;
+            }
+        }
+        if (filterDTO.getMemory() != null && filterDTO.getMemory().length > 0) {
+            if (Arrays.stream(filterDTO.getMemory()).noneMatch(memory -> memory.equals(laptop.getStorage()))) {
+                return false;
+            }
+        }
+        if (filterDTO.getProcessor() != null && filterDTO.getProcessor().length > 0) {
+            if (Arrays.stream(filterDTO.getProcessor()).noneMatch(processor -> processor.equals(laptop.getProcessor().getProducer()))) {
+                return false;
+            }
+        }
+
+        if (filterDTO.getMemoryCapacity() != null && filterDTO.getMemoryCapacity().length > 0) {
+            return Arrays.stream(filterDTO.getMemoryCapacity()).anyMatch(memoryCapacity -> memoryCapacity.equals(laptop.getStorageCapacity().toString()));
+        }
+        return true;
     }
 }
