@@ -1,5 +1,7 @@
 package com.licenta.dto;
 
+import com.licenta.utils.Utils;
+
 public class GraphicsCardDTO {
     private Long id;
     private String chipset;
@@ -7,6 +9,15 @@ public class GraphicsCardDTO {
     private String model;
     private Long capacity;
     private String technology;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -54,5 +65,16 @@ public class GraphicsCardDTO {
 
     public void setTechnology(String technology) {
         this.technology = technology;
+    }
+
+
+    public static ProductDTO toProduct(GraphicsCardDTO graphicsCardDTO) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductType(Utils.ProductTypes.GRAPHICS_CARD.getValue());
+        productDTO.setName(graphicsCardDTO.getChipset() + " " + graphicsCardDTO.getName() + " " + graphicsCardDTO.getModel());
+        productDTO.setDescription("Placa video " + graphicsCardDTO.getChipset() + " " + graphicsCardDTO.getName() + " "
+                + graphicsCardDTO.getModel() + ", " + graphicsCardDTO.getCapacity() + ", " + graphicsCardDTO.getTechnology());
+
+        return productDTO;
     }
 }

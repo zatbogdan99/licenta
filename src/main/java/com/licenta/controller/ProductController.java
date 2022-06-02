@@ -30,6 +30,16 @@ public class ProductController {
         return productService.getProcessors();
     }
 
+    @GetMapping("/get-graphic-cards")
+    public List<ProductDTO> getGraphicCards() {
+        return productService.getGraphicCards();
+    }
+
+    @GetMapping("/get-storage")
+    public List<ProductDTO> getStorage() {
+        return productService.getStorage();
+    }
+
     @PostMapping("/get-laptop")
     public LaptopDTO getLaptop(@RequestBody Long id) {
         return productService.getLaptop(id);
@@ -53,6 +63,11 @@ public class ProductController {
     @PostMapping("/save-display")
     void saveDisplay(@RequestBody SaveDisplayDTO displayDTO) {
         productService.saveDisplay(displayDTO);
+    }
+
+    @PostMapping("/save-storage")
+    void saveStorage(@RequestBody SaveStorageDTO saveStorageDTO) {
+        productService.saveStorage(saveStorageDTO);
     }
 
     @PostMapping("/update-products")

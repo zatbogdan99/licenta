@@ -1,19 +1,16 @@
 package com.licenta.service;
 
 import com.licenta.dto.*;
-import com.licenta.model.Display;
-import com.licenta.model.GraphicsCard;
-import com.licenta.model.Laptop;
-import com.licenta.model.Processor;
-import com.licenta.repository.DisplayRepository;
-import com.licenta.repository.GraphicsCardRepository;
-import com.licenta.repository.LaptopRepository;
-import com.licenta.repository.ProcessorRepository;
+import com.licenta.model.*;
+import com.licenta.repository.*;
+import com.licenta.utils.Utils;
 import org.aspectj.util.FileUtil;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.SequenceGenerator;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.sql.Blob;
@@ -40,6 +37,12 @@ public class ProductService {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    PhotosRepository photosRepository;
+
+    @Autowired
+    StorageRepository storageRepository;
 
     public List<ProductDTO> getAllProducts() {
         List<Laptop> laptops = laptopRepository.getAllLaptops();
@@ -106,7 +109,7 @@ public class ProductService {
         laptop.setGraphicsCard(graphicsCardRepository.getById(saveLaptopModel.getGraphicsCard()));
         laptop.setStorageInterface(saveLaptopModel.getStorageInterface());
         String partSeparator = ",";
-        byte[] decodedBytes;
+        byte[] decodedBytes = new byte[0];
         if (saveLaptopModel.getPhotos()[0].contains(partSeparator)) {
             String encodedImg = saveLaptopModel.getPhotos()[0].split(partSeparator)[1];
             decodedBytes = Base64.getDecoder().decode(encodedImg);
@@ -116,7 +119,29 @@ public class ProductService {
         Blob blob = new SerialBlob(decodedBytes);
         laptop.setPhoto(blob);
 
-        laptopRepository.save(laptop);
+        Laptop newLaptop = laptopRepository.save(laptop);
+
+        savePhotos(saveLaptopModel.getPhotos(), newLaptop.getId(), partSeparator);
+    }
+
+    void savePhotos(String[] photosArray, Long laptopId, String partSeparator) throws SQLException {
+        Blob blob;
+        byte[] decodedBytes;
+        for (String photo : photosArray) {
+            Photos photos = new Photos();
+            photos.setProductId(laptopId);
+            photos.setProductType(Utils.ProductTypes.LAPTOP.getValue());
+
+            if (photo.contains(partSeparator)) {
+                String encodedImg = photo.split(partSeparator)[1];
+                decodedBytes = Base64.getDecoder().decode(encodedImg);
+            } else {
+                decodedBytes = Base64.getDecoder().decode(photo);
+            }
+            blob = new SerialBlob(decodedBytes);
+            photos.setPhoto(blob);
+            photosRepository.save(photos);
+        }
     }
 
     public void saveGraphicsCard(SaveGraphicsCardDTO graphicsCardDTO) {
@@ -134,6 +159,11 @@ public class ProductService {
     public void saveProcessor(SaveProcessorDTO processorDTO) {
         Processor processor = modelMapper.map(processorDTO, Processor.class);
         processorRepository.save(processor);
+    }
+
+    public void saveStorage(SaveStorageDTO saveStorageDTO) {
+        Storage storage = modelMapper.map(saveStorageDTO, Storage.class);
+        storageRepository.save(storage);
     }
 
     public LaptopDTO getLaptop(Long id) {
@@ -191,5 +221,31 @@ public class ProductService {
             return Arrays.stream(filterDTO.getMemoryCapacity()).anyMatch(memoryCapacity -> memoryCapacity.equals(laptop.getStorageCapacity().toString()));
         }
         return true;
+    }
+
+    public List<ProductDTO> getGraphicCards() {
+        List<GraphicsCard> graphicsCards = graphicsCardRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
+
+        graphicsCards.forEach(graphicsCard -> {
+            GraphicsCardDTO graphicsCardDTO = modelMapper.map(graphicsCard, GraphicsCardDTO.class);
+
+            products.add(GraphicsCardDTO.toProduct(graphicsCardDTO));
+        });
+
+        return products;
+    }
+
+    public List<ProductDTO> getStorage() {
+        List<Storage> storages = storageRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
+
+        storages.forEach(storage -> {
+            StorageDTO storageDTO = modelMapper.map(storage, StorageDTO.class);
+
+            products.add(StorageDTO.toProduct(storageDTO));
+        });
+
+        return products;
     }
 }
