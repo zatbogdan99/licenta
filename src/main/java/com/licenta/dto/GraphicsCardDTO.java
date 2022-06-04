@@ -74,6 +74,7 @@ public class GraphicsCardDTO {
         productDTO.setName(graphicsCardDTO.getChipset() + " " + graphicsCardDTO.getName() + " " + graphicsCardDTO.getModel());
         productDTO.setDescription("Placa video " + graphicsCardDTO.getChipset() + " " + graphicsCardDTO.getName() + " "
                 + graphicsCardDTO.getModel() + ", " + graphicsCardDTO.getCapacity() + ", " + graphicsCardDTO.getTechnology());
+        productDTO.setId(graphicsCardDTO.getId());
 
         return productDTO;
     }

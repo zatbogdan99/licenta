@@ -40,9 +40,19 @@ public class ProductController {
         return productService.getStorage();
     }
 
+    @GetMapping("/get-ram")
+    public List<ProductDTO> getRam() {
+        return productService.getRam();
+    }
+
     @PostMapping("/get-laptop")
     public LaptopDTO getLaptop(@RequestBody Long id) {
         return productService.getLaptop(id);
+    }
+
+    @PostMapping("/get-photos")
+    public PhotosDto getPhotos(@RequestBody Long id) {
+        return productService.getPhotos(id);
     }
 
     @PostMapping("/save-laptop")
@@ -68,6 +78,11 @@ public class ProductController {
     @PostMapping("/save-storage")
     void saveStorage(@RequestBody SaveStorageDTO saveStorageDTO) {
         productService.saveStorage(saveStorageDTO);
+    }
+
+    @PostMapping("/save-ram")
+    void saveRam(@RequestBody SaveRamDTO saveRamDTO) {
+        productService.saveRam(saveRamDTO);
     }
 
     @PostMapping("/update-products")

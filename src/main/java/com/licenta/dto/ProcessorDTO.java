@@ -23,6 +23,7 @@ public class ProcessorDTO {
         productDTO.setDescription(processorDTO.getProducer() + " " + processorDTO.getName() + " " +
                 processorDTO.getModel() + ", " +  processorDTO.getBaseFrequency() + "Ghz, " + processorDTO.getCores() + " cores, " +
                 processorDTO.getThreads() + " threads");
+        productDTO.setId(processorDTO.id);
 
         return productDTO;
     }

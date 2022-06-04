@@ -1,15 +1,11 @@
-package com.licenta.model;
+package com.licenta.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-
-@Entity
-@Data
-public class Ram {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+@Getter
+@Setter
+public class SaveRamDTO {
     private Long id;
     private String name;
     private Long warranty;

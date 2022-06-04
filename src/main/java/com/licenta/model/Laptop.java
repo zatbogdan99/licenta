@@ -15,25 +15,24 @@ public class Laptop implements Serializable {
     @Column(name = "id")
     private Long id;
     private String name;
-    private Long guarantee;
+    private Long warranty;
     @OneToOne
     @JoinColumn(name = "DISPLAY_ID", foreignKey = @ForeignKey(name = "LAPTOP_DISPLAY_ID_FK"))
     private Display display;
     @OneToOne
     @JoinColumn(name = "PROCESSOR_ID", foreignKey = @ForeignKey(name = "LAPTOP_PROCESSOR_ID_FK"))
     private Processor processor;
-    private Long ramTotal;
-    private String ramType;
-    private Long ramFrequency;
-    private Long ramSlots;
-    private String storage;
-    private Long storageCapacity;
-    private String storageInterface;
-    private Long storageFormFactor;
-    private Long price;
+    @OneToOne
+    @JoinColumn(name = "STORAGE_ID", foreignKey = @ForeignKey(name = "LAPTOP_STORAGE_ID_FK"))
+    private Storage storage;
     @OneToOne
     @JoinColumn(name = "GRAPHICS_CARD_ID", foreignKey = @ForeignKey(name = "LAPTOP_GRAPHICS_CARD_ID_PK"))
     private GraphicsCard graphicsCard;
+    private Long price;
     @Lob
     private Blob photo;
+    private Long photosId;
+    @OneToOne
+    @JoinColumn(name = "RAM_ID", foreignKey = @ForeignKey(name = "LAPTOP_RAM_ID_FK"))
+    private Ram ram;
 }

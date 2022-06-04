@@ -30,6 +30,9 @@ public class ProductService {
     DisplayRepository displayRepository;
 
     @Autowired
+    RamRepository ramRepository;
+
+    @Autowired
     ProcessorRepository processorRepository;
 
     @Autowired
@@ -94,20 +97,11 @@ public class ProductService {
         laptop.setName(saveLaptopModel.getName());
         laptop.setPrice(saveLaptopModel.getPrice());
         laptop.setDisplay(displayRepository.getById(saveLaptopModel.getDisplay()));
-        laptop.setGuarantee(saveLaptopModel.getWaranty());
+        laptop.setWarranty(saveLaptopModel.getWarranty());
         laptop.setProcessor(processorRepository.getById(saveLaptopModel.getProcessor()));
-        laptop.setRamFrequency(saveLaptopModel.getRamFrequency());
-        laptop.setRamSlots(saveLaptopModel.getRamSlots());
-        laptop.setRamFrequency(saveLaptopModel.getRamFrequency());
-        laptop.setRamSlots(saveLaptopModel.getRamSlots());
-        laptop.setRamTotal(saveLaptopModel.getRamTotal());
-        laptop.setRamType(saveLaptopModel.getRamType());
-        laptop.setStorage(saveLaptopModel.getStorage());
-        laptop.setStorageCapacity(saveLaptopModel.getStorageCapacity());
-        laptop.setStorageFormFactor(saveLaptopModel.getStorageFormFactor());
-        laptop.setStorageInterface(laptop.getStorageInterface());
+        laptop.setRam(ramRepository.getById(saveLaptopModel.getRam()));
+        laptop.setStorage(storageRepository.getById(saveLaptopModel.getStorage()));
         laptop.setGraphicsCard(graphicsCardRepository.getById(saveLaptopModel.getGraphicsCard()));
-        laptop.setStorageInterface(saveLaptopModel.getStorageInterface());
         String partSeparator = ",";
         byte[] decodedBytes = new byte[0];
         if (saveLaptopModel.getPhotos()[0].contains(partSeparator)) {
@@ -177,6 +171,11 @@ public class ProductService {
         displayRepository.save(display);
     }
 
+    public void saveRam(SaveRamDTO saveRamDTO) {
+        Ram ram = modelMapper.map(saveRamDTO, Ram.class);
+        ramRepository.save(ram);
+    }
+
     public List<ProductDTO> updateProducts(FilterDTO filterDTO) {
         List<Laptop> laptops = laptopRepository.getAllLaptops();
         List<ProductDTO> products = new ArrayList<>();
@@ -202,7 +201,7 @@ public class ProductService {
             return false;
         }
         if (filterDTO.getRam() != null && filterDTO.getRam().length > 0) {
-            if (Arrays.stream(filterDTO.getRam()).noneMatch(ram -> ram.equals(laptop.getRamType()))) {
+            if (Arrays.stream(filterDTO.getRam()).noneMatch(ram -> ram.equals(laptop.getRam().getType()))) {
                 return false;
             }
         }
@@ -218,7 +217,7 @@ public class ProductService {
         }
 
         if (filterDTO.getMemoryCapacity() != null && filterDTO.getMemoryCapacity().length > 0) {
-            return Arrays.stream(filterDTO.getMemoryCapacity()).anyMatch(memoryCapacity -> memoryCapacity.equals(laptop.getStorageCapacity().toString()));
+            return Arrays.stream(filterDTO.getMemoryCapacity()).anyMatch(memoryCapacity -> memoryCapacity.equals(laptop.getStorage().getCapacity().toString()));
         }
         return true;
     }
@@ -247,5 +246,40 @@ public class ProductService {
         });
 
         return products;
+    }
+
+    public List<ProductDTO> getRam() {
+        List<Ram> rams = ramRepository.findAll();
+        List<ProductDTO> productDTOS = new ArrayList<>();
+
+        rams.forEach(ram -> {
+            RamDTO ramDTO = modelMapper.map(ram, RamDTO.class);
+
+            productDTOS.add(RamDTO.toProduct(ramDTO));
+        });
+
+        return productDTOS;
+    }
+
+    public PhotosDto getPhotos(Long id) {
+        List<Photos> photos = photosRepository.findAll();
+        PhotosDto photosDto = new PhotosDto();
+        List<String> photosList = new ArrayList<>();
+        photos.forEach(photo -> {
+            if (photo.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = photo.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                photosList.add(Base64.getEncoder().encodeToString(imageByte));
+            }
+        });
+
+        photosDto.setPhotos(photosList);
+        return photosDto;
     }
 }

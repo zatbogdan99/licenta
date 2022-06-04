@@ -22,6 +22,7 @@ public class StorageDTO {
         productDTO.setName(storageDTO.getType() + " " + storageDTO.getName() + ", " + storageDTO.getCapacity());
         productDTO.setDescription(productDTO.getName() + ", " + storageDTO.getStorageInterface() + ", " +
                 (storageDTO.getType().equals("SSD") ? storageDTO.getFormFactor() : storageDTO.getSpeed()));
+        productDTO.setId(storageDTO.getId());
 
         return productDTO;
     }
