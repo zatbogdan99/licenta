@@ -1,5 +1,10 @@
 package com.licenta.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ProcessorDTO {
     private Long id;
     private String producer;
@@ -14,6 +19,8 @@ public class ProcessorDTO {
     private Long l3Cache;
     private Long technology;
     private String integratedGraphics;
+    private Long forLaptop;
+    private String photo;
 
     public static ProductDTO toProduct(ProcessorDTO processorDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -24,111 +31,8 @@ public class ProcessorDTO {
                 processorDTO.getModel() + ", " +  processorDTO.getBaseFrequency() + "Ghz, " + processorDTO.getCores() + " cores, " +
                 processorDTO.getThreads() + " threads");
         productDTO.setId(processorDTO.id);
+        productDTO.setPhoto(processorDTO.getPhoto());
 
         return productDTO;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProducer() {
-        return producer;
-    }
-
-    public void setProducer(String producer) {
-        this.producer = producer;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFamily() {
-        return family;
-    }
-
-    public void setFamily(String family) {
-        this.family = family;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public Long getCores() {
-        return cores;
-    }
-
-    public void setCores(Long cores) {
-        this.cores = cores;
-    }
-
-    public Long getThreads() {
-        return threads;
-    }
-
-    public void setThreads(Long threads) {
-        this.threads = threads;
-    }
-
-    public Long getBaseFrequency() {
-        return baseFrequency;
-    }
-
-    public void setBaseFrequency(Long baseFrequency) {
-        this.baseFrequency = baseFrequency;
-    }
-
-    public Long getMaxTurboFrequency() {
-        return maxTurboFrequency;
-    }
-
-    public void setMaxTurboFrequency(Long maxTurboFrequency) {
-        this.maxTurboFrequency = maxTurboFrequency;
-    }
-
-    public Long getL2Cache() {
-        return l2Cache;
-    }
-
-    public void setL2Cache(Long l2Cache) {
-        this.l2Cache = l2Cache;
-    }
-
-    public Long getL3Cache() {
-        return l3Cache;
-    }
-
-    public void setL3Cache(Long l3Cache) {
-        this.l3Cache = l3Cache;
-    }
-
-    public Long getTechnology() {
-        return technology;
-    }
-
-    public void setTechnology(Long technology) {
-        this.technology = technology;
-    }
-
-    public String getIntegratedGraphics() {
-        return integratedGraphics;
-    }
-
-    public void setIntegratedGraphics(String integratedGraphics) {
-        this.integratedGraphics = integratedGraphics;
     }
 }

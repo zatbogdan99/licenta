@@ -1,5 +1,6 @@
 package com.licenta.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Data;
 
@@ -24,6 +25,7 @@ public class Laptop implements Serializable {
     private Processor processor;
     @OneToOne
     @JoinColumn(name = "STORAGE_ID", foreignKey = @ForeignKey(name = "LAPTOP_STORAGE_ID_FK"))
+    @JsonBackReference
     private Storage storage;
     @OneToOne
     @JoinColumn(name = "GRAPHICS_CARD_ID", foreignKey = @ForeignKey(name = "LAPTOP_GRAPHICS_CARD_ID_PK"))
@@ -34,5 +36,6 @@ public class Laptop implements Serializable {
     private Long photosId;
     @OneToOne
     @JoinColumn(name = "RAM_ID", foreignKey = @ForeignKey(name = "LAPTOP_RAM_ID_FK"))
+    @JsonBackReference
     private Ram ram;
 }

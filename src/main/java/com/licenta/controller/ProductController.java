@@ -50,9 +50,30 @@ public class ProductController {
         return productService.getLaptop(id);
     }
 
+    @PostMapping("/get-graphics-card")
+    public GraphicsCardDTO getGraphicsCard(@RequestBody Long id) {
+        return productService.getGraphicsCard(id);
+    }
+
+    @PostMapping("/get-storage-by-id")
+    public StorageDTO getStorageById(@RequestBody Long id) {
+        return productService.getStorageById(id);
+    }
+
+    @PostMapping("/get-ram-by-id")
+    public RamDTO getRamById(@RequestBody Long id) {
+        return productService.getRamById(id);
+    }
+
+    @PostMapping("/get-motherboard-by-id")
+    public MotherboardDTO getMotherboardById(@RequestBody Long id) {
+        return productService.getMotherboardById(id);
+    }
+
+
     @PostMapping("/get-photos")
-    public PhotosDto getPhotos(@RequestBody Long id) {
-        return productService.getPhotos(id);
+    public PhotosDto getPhotos(@RequestBody PhotosModelDto model) {
+        return productService.getPhotos(model);
     }
 
     @PostMapping("/save-laptop")
@@ -60,13 +81,18 @@ public class ProductController {
         productService.saveLaptop(laptop);
     }
 
+    @PostMapping("/save-motherboard")
+    void saveMotherboard(@RequestBody SaveMotherboardDTO motherboardDTO) throws SQLException {
+        productService.saveMotherboard(motherboardDTO);
+    }
+
     @PostMapping("/save-graphics-card")
-    void saveGraphicsCard(@RequestBody SaveGraphicsCardDTO graphicsCardDTO) {
+    void saveGraphicsCard(@RequestBody SaveGraphicsCardDTO graphicsCardDTO) throws SQLException {
         productService.saveGraphicsCard(graphicsCardDTO);
     }
 
     @PostMapping("/save-processor")
-    void saveProcessor(@RequestBody SaveProcessorDTO processorDTO) {
+    void saveProcessor(@RequestBody SaveProcessorDTO processorDTO) throws SQLException {
         productService.saveProcessor(processorDTO);
     }
 
@@ -76,12 +102,12 @@ public class ProductController {
     }
 
     @PostMapping("/save-storage")
-    void saveStorage(@RequestBody SaveStorageDTO saveStorageDTO) {
+    void saveStorage(@RequestBody SaveStorageDTO saveStorageDTO) throws SQLException {
         productService.saveStorage(saveStorageDTO);
     }
 
     @PostMapping("/save-ram")
-    void saveRam(@RequestBody SaveRamDTO saveRamDTO) {
+    void saveRam(@RequestBody SaveRamDTO saveRamDTO) throws SQLException {
         productService.saveRam(saveRamDTO);
     }
 

@@ -15,6 +15,7 @@ public class RamDTO {
     private Long frequency;
     private String format;
     private Long forLaptop;
+    private String photo;
 
     public static ProductDTO toProduct(RamDTO ramDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -22,6 +23,7 @@ public class RamDTO {
         productDTO.setProductType(Utils.ProductTypes.RAM.getValue());
         productDTO.setDescription(ramDTO.getName() + ", " + ramDTO.getTotal() + " " + ramDTO.getType() + " " + ramDTO.getFrequency());
         productDTO.setId(ramDTO.getId());
+        productDTO.setPhoto(ramDTO.getPhoto());
 
         return productDTO;
     }

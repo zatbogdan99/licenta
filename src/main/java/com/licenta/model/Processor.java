@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.List;
 
 @Entity
@@ -26,4 +27,7 @@ public class Processor implements Serializable {
     private Long l3Cache;
     private Long technology;
     private String integratedGraphics;
+    private Long forLaptop;
+    @Lob
+    private Blob photo;
 }

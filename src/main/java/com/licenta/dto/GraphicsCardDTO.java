@@ -10,6 +10,33 @@ public class GraphicsCardDTO {
     private Long capacity;
     private String technology;
     private String name;
+    private Long forLaptop;
+    private String photo;
+    private Long price;
+
+    public Long getPrice() {
+        return price;
+    }
+
+    public void setPrice(Long price) {
+        this.price = price;
+    }
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
+    public Long getForLaptop() {
+        return forLaptop;
+    }
+
+    public void setForLaptop(Long forLaptop) {
+        this.forLaptop = forLaptop;
+    }
 
     public String getName() {
         return name;
@@ -75,6 +102,8 @@ public class GraphicsCardDTO {
         productDTO.setDescription("Placa video " + graphicsCardDTO.getChipset() + " " + graphicsCardDTO.getName() + " "
                 + graphicsCardDTO.getModel() + ", " + graphicsCardDTO.getCapacity() + ", " + graphicsCardDTO.getTechnology());
         productDTO.setId(graphicsCardDTO.getId());
+        productDTO.setPhoto(graphicsCardDTO.getPhoto());
+        productDTO.setPrice(graphicsCardDTO.getPrice());
 
         return productDTO;
     }

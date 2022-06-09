@@ -8,7 +8,8 @@ public class Utils {
         GRAPHICS_CARD("GraphicsCard"),
         PROCESSOR("Processor"),
         RAM("RAM"),
-        STORAGE("Storage");
+        STORAGE("Storage"),
+        MOTHERBOARD("Motherboard");
 
         private String value;
 

@@ -4,6 +4,8 @@ import com.licenta.utils.Utils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Blob;
+
 @Getter
 @Setter
 public class StorageDTO {
@@ -15,6 +17,7 @@ public class StorageDTO {
     private String storageInterface;
     private Long formFactor;
     private Long speed;
+    private String photo;
 
     public static ProductDTO toProduct(StorageDTO storageDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -23,6 +26,7 @@ public class StorageDTO {
         productDTO.setDescription(productDTO.getName() + ", " + storageDTO.getStorageInterface() + ", " +
                 (storageDTO.getType().equals("SSD") ? storageDTO.getFormFactor() : storageDTO.getSpeed()));
         productDTO.setId(storageDTO.getId());
+        productDTO.setPhoto(storageDTO.getPhoto());
 
         return productDTO;
     }

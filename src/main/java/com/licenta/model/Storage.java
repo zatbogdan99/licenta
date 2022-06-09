@@ -1,8 +1,10 @@
 package com.licenta.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Blob;
 
 @Entity
 @Data
@@ -18,4 +20,7 @@ public class Storage {
     private String storage_interface;
     private Long form_factor;
     private Long speed;
+    @Lob
+    @JsonBackReference
+    private Blob photo;
 }

@@ -14,4 +14,5 @@ public class SaveRamDTO {
     private Long frequency;
     private String format;
     private Long forLaptop;
+    private String[] photos;
 }

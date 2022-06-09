@@ -15,10 +15,7 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ProductService {
@@ -39,6 +36,9 @@ public class ProductService {
     GraphicsCardRepository graphicsCardRepository;
 
     @Autowired
+    MotherboardRepository motherboardRepository;
+
+    @Autowired
     ModelMapper modelMapper;
 
     @Autowired
@@ -49,6 +49,11 @@ public class ProductService {
 
     public List<ProductDTO> getAllProducts() {
         List<Laptop> laptops = laptopRepository.getAllLaptops();
+        List<GraphicsCard> graphicsCards = graphicsCardRepository.findAll();
+        List<Processor> processors = processorRepository.findAll();
+        List<Ram> rams = ramRepository.findAll();
+        List<Storage> storages = storageRepository.findAll();
+        List<Motherboard> motherboards = motherboardRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
 
         laptops.forEach(laptop -> {
@@ -64,6 +69,78 @@ public class ProductService {
             System.out.println(laptopDTO);
             products.add(LaptopDTO.toProduct(laptopDTO));
         });
+
+        graphicsCards.stream().filter(graphicsCard -> graphicsCard.getForLaptop() == 0).forEach(graphicsCard -> {
+            GraphicsCardDTO graphicsCardDTO = modelMapper.map(graphicsCard, GraphicsCardDTO.class);
+            if (graphicsCard.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = graphicsCard.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                graphicsCardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+            products.add(GraphicsCardDTO.toProduct(graphicsCardDTO));
+        });
+
+        processors.stream().filter(processor -> processor.getForLaptop() == 0).forEach(processor -> {
+            ProcessorDTO processorDTO = modelMapper.map(processor, ProcessorDTO.class);
+            if (processorDTO.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = processor.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                processorDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+
+            products.add(ProcessorDTO.toProduct(processorDTO));
+        });
+
+        rams.forEach(ram -> {
+            RamDTO ramDTO = modelMapper.map(ram, RamDTO.class);
+            if (ram.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = ram.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                ramDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+            products.add(RamDTO.toProduct(ramDTO));
+        });
+
+        storages.forEach(storage -> {
+            StorageDTO storageDTO = modelMapper.map(storage, StorageDTO.class);
+            if (storage.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = storage.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                storageDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+            products.add(StorageDTO.toProduct(storageDTO));
+        });
+
+        motherboards.forEach(motherboard -> {
+            MotherboardDTO motherboardDTO = modelMapper.map(motherboard, MotherboardDTO.class);
+            if (motherboard.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = motherboard.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                motherboardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+            products.add(MotherboardDTO.toProduct(motherboardDTO));
+        });
+
         return products;
     }
 
@@ -92,6 +169,40 @@ public class ProductService {
         return products;
     }
 
+    public void saveStorage(SaveStorageDTO saveStorageDTO) throws SQLException {
+        Storage storage = modelMapper.map(saveStorageDTO, Storage.class);
+        String partSeparator = ",";
+        byte[] decodedBytes = new byte[0];
+        if (saveStorageDTO.getPhotos()[0].contains(partSeparator)) {
+            String encodedImg = saveStorageDTO.getPhotos()[0].split(partSeparator)[1];
+            decodedBytes = Base64.getDecoder().decode(encodedImg);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(saveStorageDTO.getPhotos()[0]);
+        }
+        Blob blob = new SerialBlob(decodedBytes);
+        storage.setPhoto(blob);
+
+        Storage storage1 = storageRepository.save(storage);
+        savePhotos(saveStorageDTO.getPhotos(), storage1.getId(), partSeparator, Utils.ProductTypes.STORAGE.getValue());
+    }
+
+    public void saveRam(SaveRamDTO saveRamDTO) throws SQLException {
+        Ram ram = modelMapper.map(saveRamDTO, Ram.class);
+        String partSeparator = ",";
+        byte[] decodedBytes = new byte[0];
+        if (saveRamDTO.getPhotos()[0].contains(partSeparator)) {
+            String encodedImg = saveRamDTO.getPhotos()[0].split(partSeparator)[1];
+            decodedBytes = Base64.getDecoder().decode(encodedImg);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(saveRamDTO.getPhotos()[0]);
+        }
+        Blob blob = new SerialBlob(decodedBytes);
+        ram.setPhoto(blob);
+
+        Ram newRam = ramRepository.save(ram);
+        savePhotos(saveRamDTO.getPhotos(), newRam.getId(), partSeparator, Utils.ProductTypes.RAM.getValue());
+}
+
     public void saveLaptop(SaveLaptopModel saveLaptopModel) throws SQLException {
         Laptop laptop = new Laptop();
         laptop.setName(saveLaptopModel.getName());
@@ -115,16 +226,16 @@ public class ProductService {
 
         Laptop newLaptop = laptopRepository.save(laptop);
 
-        savePhotos(saveLaptopModel.getPhotos(), newLaptop.getId(), partSeparator);
+        savePhotos(saveLaptopModel.getPhotos(), newLaptop.getId(), partSeparator, Utils.ProductTypes.LAPTOP.getValue());
     }
 
-    void savePhotos(String[] photosArray, Long laptopId, String partSeparator) throws SQLException {
+    void savePhotos(String[] photosArray, Long laptopId, String partSeparator, String productType) throws SQLException {
         Blob blob;
         byte[] decodedBytes;
         for (String photo : photosArray) {
             Photos photos = new Photos();
             photos.setProductId(laptopId);
-            photos.setProductType(Utils.ProductTypes.LAPTOP.getValue());
+            photos.setProductType(productType);
 
             if (photo.contains(partSeparator)) {
                 String encodedImg = photo.split(partSeparator)[1];
@@ -138,7 +249,7 @@ public class ProductService {
         }
     }
 
-    public void saveGraphicsCard(SaveGraphicsCardDTO graphicsCardDTO) {
+    public void saveGraphicsCard(SaveGraphicsCardDTO graphicsCardDTO) throws SQLException {
         GraphicsCard graphicsCard = new GraphicsCard();
         graphicsCard.setChipset(graphicsCardDTO.getChipset());
         graphicsCard.setCapacity(graphicsCardDTO.getCapacity());
@@ -147,33 +258,88 @@ public class ProductService {
         graphicsCard.setType(graphicsCardDTO.getType());
         graphicsCard.setName(graphicsCardDTO.getName());
 
+        String partSeparator = ",";
+        byte[] decodedBytes = new byte[0];
+        if (graphicsCardDTO.getPhotos()[0].contains(partSeparator)) {
+            String encodedImg = graphicsCardDTO.getPhotos()[0].split(partSeparator)[1];
+            decodedBytes = Base64.getDecoder().decode(encodedImg);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(graphicsCardDTO.getPhotos()[0]);
+        }
+        Blob blob = new SerialBlob(decodedBytes);
+        graphicsCard.setPhoto(blob);
+
+        GraphicsCard newGraphicsCard = graphicsCardRepository.save(graphicsCard);
+
+        savePhotos(graphicsCardDTO.getPhotos(), newGraphicsCard.getId(), partSeparator, Utils.ProductTypes.GRAPHICS_CARD.getValue());
+
         graphicsCardRepository.save(graphicsCard);
     }
 
-    public void saveProcessor(SaveProcessorDTO processorDTO) {
+    public void saveProcessor(SaveProcessorDTO processorDTO) throws SQLException {
         Processor processor = modelMapper.map(processorDTO, Processor.class);
-        processorRepository.save(processor);
+        String partSeparator = ",";
+        byte[] decodedBytes = new byte[0];
+        if (processorDTO.getPhotos()[0].contains(partSeparator)) {
+            String encodedImg = processorDTO.getPhotos()[0].split(partSeparator)[1];
+            decodedBytes = Base64.getDecoder().decode(encodedImg);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(processorDTO.getPhotos()[0]);
+        }
+        Blob blob = new SerialBlob(decodedBytes);
+        processor.setPhoto(blob);
+
+        Processor newProcessor = processorRepository.save(processor);
+
+        savePhotos(processorDTO.getPhotos(), newProcessor.getId(), partSeparator, Utils.ProductTypes.PROCESSOR.getValue());
     }
 
-    public void saveStorage(SaveStorageDTO saveStorageDTO) {
-        Storage storage = modelMapper.map(saveStorageDTO, Storage.class);
-        storageRepository.save(storage);
+    public GraphicsCardDTO getGraphicsCard(Long id) {
+        GraphicsCard graphicsCard = graphicsCardRepository.getById(id);
+        return modelMapper.map(graphicsCard, GraphicsCardDTO.class);
     }
 
     public LaptopDTO getLaptop(Long id) {
         Laptop laptop = laptopRepository.getById(id);
-        LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
-        return laptopDTO;
+        return modelMapper.map(laptop, LaptopDTO.class);
+    }
+
+    public StorageDTO getStorageById(Long id) {
+        Storage storage = storageRepository.getById(id);
+        return modelMapper.map(storage, StorageDTO.class);
+    }
+
+    public MotherboardDTO getMotherboardById(Long id) {
+        Motherboard motherboard = motherboardRepository.getById(id);
+        return modelMapper.map(motherboard, MotherboardDTO.class);
+    }
+
+    public RamDTO getRamById(Long id) {
+        Ram ram = ramRepository.getById(id);
+        return modelMapper.map(ram, RamDTO.class);
+    }
+
+    public void saveMotherboard(SaveMotherboardDTO motherboardDTO) throws SQLException {
+        Motherboard motherboard = modelMapper.map(motherboardDTO, Motherboard.class);
+        String partSeparator = ",";
+        byte[] decodedBytes = new byte[0];
+        if (motherboardDTO.getPhotos()[0].contains(partSeparator)) {
+            String encodedImg = motherboardDTO.getPhotos()[0].split(partSeparator)[1];
+            decodedBytes = Base64.getDecoder().decode(encodedImg);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(motherboardDTO.getPhotos()[0]);
+        }
+        Blob blob = new SerialBlob(decodedBytes);
+        motherboard.setPhoto(blob);
+
+        Motherboard newMotherboard = motherboardRepository.save(motherboard);
+
+        savePhotos(motherboardDTO.getPhotos(), newMotherboard.getId(), partSeparator, Utils.ProductTypes.MOTHERBOARD.getValue());
     }
 
     public void saveDisplay(SaveDisplayDTO displayDTO) {
         Display display = modelMapper.map(displayDTO, Display.class);
         displayRepository.save(display);
-    }
-
-    public void saveRam(SaveRamDTO saveRamDTO) {
-        Ram ram = modelMapper.map(saveRamDTO, Ram.class);
-        ramRepository.save(ram);
     }
 
     public List<ProductDTO> updateProducts(FilterDTO filterDTO) {
@@ -261,8 +427,8 @@ public class ProductService {
         return productDTOS;
     }
 
-    public PhotosDto getPhotos(Long id) {
-        List<Photos> photos = photosRepository.findAll();
+    public PhotosDto getPhotos(PhotosModelDto photosModelDto) {
+        Set<Photos> photos = photosRepository.findAllByProductIdAndProductType(photosModelDto.getId(), photosModelDto.getProductType());
         PhotosDto photosDto = new PhotosDto();
         List<String> photosList = new ArrayList<>();
         photos.forEach(photo -> {

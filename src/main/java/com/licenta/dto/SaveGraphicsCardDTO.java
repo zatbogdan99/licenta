@@ -7,6 +7,15 @@ public class SaveGraphicsCardDTO {
     Long capacity;
     String technology;
     String type;
+    private String[] photos;
+
+    public String[] getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(String[] photos) {
+        this.photos = photos;
+    }
 
     public String getChipset() {
         return chipset;
