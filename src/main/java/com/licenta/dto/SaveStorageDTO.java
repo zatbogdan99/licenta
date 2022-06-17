@@ -13,5 +13,6 @@ public class SaveStorageDTO {
     private String storage_interface;
     private Long form_factor;
     private Long speed;
+    private Long stock;
     private String[] photos;
 }

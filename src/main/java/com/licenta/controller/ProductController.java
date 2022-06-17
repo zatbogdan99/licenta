@@ -1,10 +1,13 @@
 package com.licenta.controller;
 
 import com.licenta.dto.*;
+import com.licenta.model.ConfiguratorDTO;
+import com.licenta.model.Desktop;
 import com.licenta.model.Laptop;
 import com.licenta.repository.LaptopRepository;
 import com.licenta.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
@@ -16,7 +19,7 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
-    @GetMapping()
+    @GetMapping("load-products")
     public List<ProductDTO> loadProducts() {
         return productService.getAllProducts();
     }
@@ -28,6 +31,31 @@ public class ProductController {
     @GetMapping("/get-processors")
     public List<ProductDTO> getProcessors() {
         return productService.getProcessors();
+    }
+
+    @PostMapping("/get-compatible-processors")
+    public List<ProductDTO> getCompatibleProcessors(@RequestBody ConfiguratorDTO configuratorDTO) {
+        return productService.getCompatibleProcessors(configuratorDTO);
+    }
+
+    @PostMapping("/get-compatible-graphics-cards")
+    public List<ProductDTO> getCompatibleGraphicsCards(@RequestBody ConfiguratorDTO configuratorDTO) {
+        return productService.getCompatibleGraphicsCards(configuratorDTO);
+    }
+
+    @PostMapping("/get-compatible-rams")
+    public List<ProductDTO> getCompatibleRams(@RequestBody ConfiguratorDTO configuratorDTO) {
+        return productService.getCompatibleRams(configuratorDTO);
+    }
+
+    @PostMapping("/get-compatible-storages")
+    public List<ProductDTO> getCompatibleStorages(@RequestBody ConfiguratorDTO configuratorDTO) {
+        return productService.getCompatibleStorages(configuratorDTO);
+    }
+
+    @PostMapping("/get-compatible-motherboards")
+    public List<ProductDTO> getCompatibleMotherboards(@RequestBody ConfiguratorDTO configuratorDTO) {
+        return productService.getCompatibleMotherboards(configuratorDTO);
     }
 
     @GetMapping("/get-graphic-cards")
@@ -45,6 +73,11 @@ public class ProductController {
         return productService.getRam();
     }
 
+    @GetMapping("/get-desktops")
+    public List<ProductDTO> getDesktops(@RequestBody Long id) {
+        return productService.getDesktops(id);
+    }
+
     @PostMapping("/get-laptop")
     public LaptopDTO getLaptop(@RequestBody Long id) {
         return productService.getLaptop(id);
@@ -53,6 +86,11 @@ public class ProductController {
     @PostMapping("/get-graphics-card")
     public GraphicsCardDTO getGraphicsCard(@RequestBody Long id) {
         return productService.getGraphicsCard(id);
+    }
+
+    @PostMapping("/get-processor")
+    public ResponseEntity<ProcessorDTO> getProcessor(@RequestBody Long id) {
+        return ResponseEntity.ok(productService.getProcessor(id));
     }
 
     @PostMapping("/get-storage-by-id")
@@ -70,6 +108,10 @@ public class ProductController {
         return productService.getMotherboardById(id);
     }
 
+    @PostMapping("/get-desktop")
+    public DesktopDTO getDesktop(@RequestBody Long id) {
+        return productService.getDesktop(id);
+    }
 
     @PostMapping("/get-photos")
     public PhotosDto getPhotos(@RequestBody PhotosModelDto model) {
@@ -99,6 +141,16 @@ public class ProductController {
     @PostMapping("/save-display")
     void saveDisplay(@RequestBody SaveDisplayDTO displayDTO) {
         productService.saveDisplay(displayDTO);
+    }
+
+    @PostMapping("/save-desktop")
+    void saveDesktop(@RequestBody SaveDesktopDTO saveDesktopDTO) throws SQLException {
+        productService.saveDesktop(saveDesktopDTO);
+    }
+
+    @PostMapping("update-product-stock")
+    void updateProductStock(@RequestBody UpdateProductStock updateProductStock) {
+        productService.updateStock(updateProductStock);
     }
 
     @PostMapping("/save-storage")

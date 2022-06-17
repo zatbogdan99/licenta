@@ -1,5 +1,6 @@
 package com.licenta.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -29,5 +30,7 @@ public class Processor implements Serializable {
     private String integratedGraphics;
     private Long forLaptop;
     @Lob
+    @JsonBackReference
     private Blob photo;
+    private Long stock;
 }

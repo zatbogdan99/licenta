@@ -55,4 +55,5 @@ public class Motherboard {
     private Blob photo;
     private Long price;
     private Long warranty;
+    private Long stock;
 }

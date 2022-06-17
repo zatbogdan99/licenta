@@ -21,6 +21,7 @@ public class LaptopDTO {
     private Long price;
     private String photo;
     private Long photosId;
+    private Long stock;
 
     public static ProductDTO toProduct(LaptopDTO laptopDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -34,6 +35,7 @@ public class LaptopDTO {
         productDTO.setPrice(laptopDTO.getPrice());
         productDTO.setPhoto(laptopDTO.getPhoto());
         productDTO.setId(laptopDTO.getId());
+        productDTO.setStock(laptopDTO.getStock());
 
         return productDTO;
     }

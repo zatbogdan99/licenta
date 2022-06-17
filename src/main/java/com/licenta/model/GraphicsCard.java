@@ -1,5 +1,6 @@
 package com.licenta.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -29,7 +30,10 @@ public class GraphicsCard implements Serializable {
     private Long forLaptop;
 
     @Lob
+    @JsonBackReference
     private Blob photo;
 
     private Long price;
+
+    private Long stock;
 }

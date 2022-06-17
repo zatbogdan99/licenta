@@ -1,5 +1,6 @@
 package com.licenta.repository;
 
+import com.licenta.dto.SaveStorageDTO;
 import com.licenta.model.Laptop;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

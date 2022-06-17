@@ -42,6 +42,7 @@ public class MotherboardDTO {
     private Long ps2Keyboard;
     private String photo;
     private Long price;
+    private Long stock;
 
     public static ProductDTO toProduct(MotherboardDTO motherboardDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -52,6 +53,7 @@ public class MotherboardDTO {
         productDTO.setId(motherboardDTO.getId());
         productDTO.setPhoto(motherboardDTO.getPhoto());
         productDTO.setPrice(motherboardDTO.getPrice());
+        productDTO.setStock(motherboardDTO.getStock());
 
         return productDTO;
     }

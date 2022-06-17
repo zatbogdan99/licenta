@@ -38,4 +38,5 @@ public class Laptop implements Serializable {
     @JoinColumn(name = "RAM_ID", foreignKey = @ForeignKey(name = "LAPTOP_RAM_ID_FK"))
     @JsonBackReference
     private Ram ram;
+    private Long stock;
 }

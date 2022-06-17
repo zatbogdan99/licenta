@@ -30,6 +30,9 @@ public class ProductService {
     RamRepository ramRepository;
 
     @Autowired
+    DesktopRepository desktopRepository;
+
+    @Autowired
     ProcessorRepository processorRepository;
 
     @Autowired
@@ -47,6 +50,23 @@ public class ProductService {
     @Autowired
     StorageRepository storageRepository;
 
+    public void saveStorage(SaveStorageDTO saveStorageDTO) throws SQLException {
+        Storage storage = modelMapper.map(saveStorageDTO, Storage.class);
+        String partSeparator = ",";
+        byte[] decodedBytes = new byte[0];
+        if (saveStorageDTO.getPhotos()[0].contains(partSeparator)) {
+            String encodedImg = saveStorageDTO.getPhotos()[0].split(partSeparator)[1];
+            decodedBytes = Base64.getDecoder().decode(encodedImg);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(saveStorageDTO.getPhotos()[0]);
+        }
+        Blob blob = new SerialBlob(decodedBytes);
+        storage.setPhoto(blob);
+
+        Storage storage1 = storageRepository.save(storage);
+        savePhotos(saveStorageDTO.getPhotos(), storage1.getId(), partSeparator, Utils.ProductTypes.STORAGE.getValue());
+    }
+
     public List<ProductDTO> getAllProducts() {
         List<Laptop> laptops = laptopRepository.getAllLaptops();
         List<GraphicsCard> graphicsCards = graphicsCardRepository.findAll();
@@ -54,6 +74,7 @@ public class ProductService {
         List<Ram> rams = ramRepository.findAll();
         List<Storage> storages = storageRepository.findAll();
         List<Motherboard> motherboards = motherboardRepository.findAll();
+        List<Desktop> desktops = desktopRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
 
         laptops.forEach(laptop -> {
@@ -141,6 +162,20 @@ public class ProductService {
             products.add(MotherboardDTO.toProduct(motherboardDTO));
         });
 
+        desktops.forEach(desktop -> {
+            DesktopDTO desktopDTO = modelMapper.map(desktop, DesktopDTO.class);
+            if (desktop.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = desktop.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                desktopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+            products.add(DesktopDTO.toProduct(desktopDTO));
+        });
+
         return products;
     }
 
@@ -169,21 +204,119 @@ public class ProductService {
         return products;
     }
 
-    public void saveStorage(SaveStorageDTO saveStorageDTO) throws SQLException {
-        Storage storage = modelMapper.map(saveStorageDTO, Storage.class);
-        String partSeparator = ",";
-        byte[] decodedBytes = new byte[0];
-        if (saveStorageDTO.getPhotos()[0].contains(partSeparator)) {
-            String encodedImg = saveStorageDTO.getPhotos()[0].split(partSeparator)[1];
-            decodedBytes = Base64.getDecoder().decode(encodedImg);
-        } else {
-            decodedBytes = Base64.getDecoder().decode(saveStorageDTO.getPhotos()[0]);
-        }
-        Blob blob = new SerialBlob(decodedBytes);
-        storage.setPhoto(blob);
+    public List<ProductDTO> getCompatibleProcessors(ConfiguratorDTO configuratorDTO) {
+        List<Processor> processors = processorRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
 
-        Storage storage1 = storageRepository.save(storage);
-        savePhotos(saveStorageDTO.getPhotos(), storage1.getId(), partSeparator, Utils.ProductTypes.STORAGE.getValue());
+        processors.forEach(processor -> {
+            ProcessorDTO processorDTO = modelMapper.map(processor, ProcessorDTO.class);
+
+            if (processorDTO.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = processor.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                processorDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+
+            products.add(ProcessorDTO.toProduct(processorDTO));
+        });
+
+        return products;
+    }
+
+    public List<ProductDTO> getCompatibleGraphicsCards(ConfiguratorDTO configuratorDTO) {
+        List<GraphicsCard> graphicsCards = graphicsCardRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
+
+        graphicsCards.forEach(graphicsCard -> {
+            GraphicsCardDTO graphicsCardDTO = modelMapper.map(graphicsCard, GraphicsCardDTO.class);
+
+            if (graphicsCardDTO.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = graphicsCard.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                graphicsCardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+
+            products.add(GraphicsCardDTO.toProduct(graphicsCardDTO));
+        });
+
+        return products;
+    }
+
+    public List<ProductDTO> getCompatibleRams(ConfiguratorDTO configuratorDTO) {
+        List<Ram> rams = ramRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
+
+        rams.forEach(ram -> {
+            RamDTO ramDTO = modelMapper.map(ram, RamDTO.class);
+
+            if (ramDTO.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = ram.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                ramDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+
+            products.add(RamDTO.toProduct(ramDTO));
+        });
+
+        return products;
+    }
+
+    public List<ProductDTO> getCompatibleStorages(ConfiguratorDTO configuratorDTO) {
+        List<Storage> storages = storageRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
+
+        storages.forEach(storage -> {
+            StorageDTO storageDTO = modelMapper.map(storage, StorageDTO.class);
+
+            if (storageDTO.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = storage.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                storageDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+
+            products.add(StorageDTO.toProduct(storageDTO));
+        });
+
+        return products;
+    }
+
+    public List<ProductDTO> getCompatibleMotherboards(ConfiguratorDTO configuratorDTO) {
+        List<Motherboard> motherboards = motherboardRepository.findAll();
+        List<ProductDTO> products = new ArrayList<>();
+
+        motherboards.forEach(motherboard -> {
+            MotherboardDTO motherboardDTO = modelMapper.map(motherboard, MotherboardDTO.class);
+
+            if (motherboardDTO.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = motherboard.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                motherboardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+
+            products.add(MotherboardDTO.toProduct(motherboardDTO));
+        });
+
+        return products;
     }
 
     public void saveRam(SaveRamDTO saveRamDTO) throws SQLException {
@@ -203,6 +336,33 @@ public class ProductService {
         savePhotos(saveRamDTO.getPhotos(), newRam.getId(), partSeparator, Utils.ProductTypes.RAM.getValue());
 }
 
+    public void saveDesktop(SaveDesktopDTO saveDesktopDTO) throws SQLException {
+        Desktop desktop = new Desktop();
+        desktop.setName(saveDesktopDTO.getName());
+        desktop.setWarranty(saveDesktopDTO.getWarranty());
+        desktop.setProcessor(processorRepository.getById(saveDesktopDTO.getProcessor()));
+        desktop.setGraphicsCard(graphicsCardRepository.getById(saveDesktopDTO.getGraphicsCard()));
+        desktop.setStorage(storageRepository.getById(saveDesktopDTO.getStorage()));
+        desktop.setRam(ramRepository.getById(saveDesktopDTO.getRam()));
+        desktop.setType(saveDesktopDTO.getType());
+        desktop.setStock(saveDesktopDTO.getStock());
+
+        String partSeparator = ",";
+        byte[] decodedBytes = new byte[0];
+        if (saveDesktopDTO.getPhotos()[0].contains(partSeparator)) {
+            String encodedImg = saveDesktopDTO.getPhotos()[0].split(partSeparator)[1];
+            decodedBytes = Base64.getDecoder().decode(encodedImg);
+        } else {
+            decodedBytes = Base64.getDecoder().decode(saveDesktopDTO.getPhotos()[0]);
+        }
+        Blob blob = new SerialBlob(decodedBytes);
+        desktop.setPhoto(blob);
+
+        Desktop newDesktop = desktopRepository.save(desktop);
+
+        savePhotos(saveDesktopDTO.getPhotos(), newDesktop.getId(), partSeparator, Utils.ProductTypes.DESKTOP.getValue());
+    }
+
     public void saveLaptop(SaveLaptopModel saveLaptopModel) throws SQLException {
         Laptop laptop = new Laptop();
         laptop.setName(saveLaptopModel.getName());
@@ -213,6 +373,8 @@ public class ProductService {
         laptop.setRam(ramRepository.getById(saveLaptopModel.getRam()));
         laptop.setStorage(storageRepository.getById(saveLaptopModel.getStorage()));
         laptop.setGraphicsCard(graphicsCardRepository.getById(saveLaptopModel.getGraphicsCard()));
+        laptop.setStock(saveLaptopModel.getStock());
+
         String partSeparator = ",";
         byte[] decodedBytes = new byte[0];
         if (saveLaptopModel.getPhotos()[0].contains(partSeparator)) {
@@ -257,6 +419,7 @@ public class ProductService {
         graphicsCard.setTechnology(graphicsCardDTO.getTechnology());
         graphicsCard.setType(graphicsCardDTO.getType());
         graphicsCard.setName(graphicsCardDTO.getName());
+        graphicsCard.setStock(graphicsCardDTO.getStock());
 
         String partSeparator = ",";
         byte[] decodedBytes = new byte[0];
@@ -299,6 +462,11 @@ public class ProductService {
         return modelMapper.map(graphicsCard, GraphicsCardDTO.class);
     }
 
+    public ProcessorDTO getProcessor(Long id) {
+        Processor processor = processorRepository.getById(id);
+        return modelMapper.map(processor, ProcessorDTO.class);
+    }
+
     public LaptopDTO getLaptop(Long id) {
         Laptop laptop = laptopRepository.getById(id);
         return modelMapper.map(laptop, LaptopDTO.class);
@@ -312,6 +480,11 @@ public class ProductService {
     public MotherboardDTO getMotherboardById(Long id) {
         Motherboard motherboard = motherboardRepository.getById(id);
         return modelMapper.map(motherboard, MotherboardDTO.class);
+    }
+
+    public DesktopDTO getDesktop(Long id) {
+        Desktop desktop = desktopRepository.getById(id);
+        return modelMapper.map(desktop, DesktopDTO.class);
     }
 
     public RamDTO getRamById(Long id) {
@@ -427,6 +600,19 @@ public class ProductService {
         return productDTOS;
     }
 
+    public List<ProductDTO> getDesktops(Long id) {
+        List<Desktop> desktops = desktopRepository.findAll();
+        List<ProductDTO> productDTOS = new ArrayList<>();
+
+        desktops.forEach(desktop -> {
+            DesktopDTO desktopDTO = modelMapper.map(desktop, DesktopDTO.class);
+
+            productDTOS.add(DesktopDTO.toProduct(desktopDTO));
+        });
+
+        return productDTOS;
+    }
+
     public PhotosDto getPhotos(PhotosModelDto photosModelDto) {
         Set<Photos> photos = photosRepository.findAllByProductIdAndProductType(photosModelDto.getId(), photosModelDto.getProductType());
         PhotosDto photosDto = new PhotosDto();
@@ -447,5 +633,46 @@ public class ProductService {
 
         photosDto.setPhotos(photosList);
         return photosDto;
+    }
+
+    @Transactional
+    public void updateStock(UpdateProductStock updateProductStock) {
+        switch (updateProductStock.getSelectedProductType()) {
+            case "Laptop": {
+                Laptop laptop = laptopRepository.getById(updateProductStock.getSelectedProduct());
+                laptop.setStock(updateProductStock.getValue());
+                break;
+            }
+            case "Desktop": {
+                Desktop desktop = desktopRepository.getById(updateProductStock.getSelectedProduct());
+                desktop.setStock(updateProductStock.getValue());
+                break;
+            }
+            case "GraphicsCard": {
+                GraphicsCard graphicsCard = graphicsCardRepository.getById(updateProductStock.getSelectedProduct());
+                graphicsCard.setStock(updateProductStock.getValue());
+                break;
+            }
+            case "Processor": {
+                Processor processor = processorRepository.getById(updateProductStock.getSelectedProduct());
+                processor.setStock(updateProductStock.getValue());
+                break;
+            }
+            case "RAM": {
+                Ram ram = ramRepository.getById(updateProductStock.getSelectedProduct());
+                ram.setStock(updateProductStock.getValue());
+                break;
+            }
+            case "Storage": {
+                Storage storage = storageRepository.getById(updateProductStock.getSelectedProduct());
+                storage.setStock(updateProductStock.getValue());
+                break;
+            }
+            case "Motherboard": {
+                Motherboard motherboard = motherboardRepository.getById(updateProductStock.getSelectedProduct());
+                motherboard.setStock(updateProductStock.getValue());
+                break;
+            }
+        }
     }
 }

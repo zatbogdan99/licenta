@@ -18,6 +18,7 @@ public class StorageDTO {
     private Long formFactor;
     private Long speed;
     private String photo;
+    private Long stock;
 
     public static ProductDTO toProduct(StorageDTO storageDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -27,6 +28,7 @@ public class StorageDTO {
                 (storageDTO.getType().equals("SSD") ? storageDTO.getFormFactor() : storageDTO.getSpeed()));
         productDTO.setId(storageDTO.getId());
         productDTO.setPhoto(storageDTO.getPhoto());
+        productDTO.setStock(storageDTO.getStock());
 
         return productDTO;
     }

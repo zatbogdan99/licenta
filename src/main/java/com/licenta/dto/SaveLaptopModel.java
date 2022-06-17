@@ -17,5 +17,6 @@ public class SaveLaptopModel {
     private Long storage;
     private Long graphicsCard;
     private Long price;
+    private Long stock;
     private String[] photos;
 }

@@ -42,4 +42,5 @@ public class SaveMotherboardDTO {
     private String[] photos;
     private Long price;
     private Long warranty;
+    private Long stock;
 }

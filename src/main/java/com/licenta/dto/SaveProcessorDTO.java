@@ -18,5 +18,6 @@ public class SaveProcessorDTO {
     private Long l3Cache;
     private Long technology;
     private String integratedGraphics;
+    private Long stock;
     private String[] photos;
 }

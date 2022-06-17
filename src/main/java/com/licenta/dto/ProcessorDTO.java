@@ -21,6 +21,8 @@ public class ProcessorDTO {
     private String integratedGraphics;
     private Long forLaptop;
     private String photo;
+    private Long stock;
+    private Long price;
 
     public static ProductDTO toProduct(ProcessorDTO processorDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -32,6 +34,8 @@ public class ProcessorDTO {
                 processorDTO.getThreads() + " threads");
         productDTO.setId(processorDTO.id);
         productDTO.setPhoto(processorDTO.getPhoto());
+        productDTO.setStock(processorDTO.getStock());
+        productDTO.setPrice(processorDTO.getPrice());
 
         return productDTO;
     }

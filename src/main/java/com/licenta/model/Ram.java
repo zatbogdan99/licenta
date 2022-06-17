@@ -23,4 +23,5 @@ public class Ram {
     @Lob
     @JsonBackReference
     private Blob photo;
+    private Long stock;
 }
