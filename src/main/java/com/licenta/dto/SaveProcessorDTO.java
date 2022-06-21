@@ -20,4 +20,5 @@ public class SaveProcessorDTO {
     private String integratedGraphics;
     private Long stock;
     private String[] photos;
+    private Long price;
 }

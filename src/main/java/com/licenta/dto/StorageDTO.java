@@ -19,6 +19,7 @@ public class StorageDTO {
     private Long speed;
     private String photo;
     private Long stock;
+    private Long price;
 
     public static ProductDTO toProduct(StorageDTO storageDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -29,6 +30,7 @@ public class StorageDTO {
         productDTO.setId(storageDTO.getId());
         productDTO.setPhoto(storageDTO.getPhoto());
         productDTO.setStock(storageDTO.getStock());
+        productDTO.setPrice(storageDTO.getPrice());
 
         return productDTO;
     }

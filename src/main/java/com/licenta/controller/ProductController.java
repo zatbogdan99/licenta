@@ -78,6 +78,11 @@ public class ProductController {
         return productService.getDesktops(id);
     }
 
+    @GetMapping("/get-laptops")
+    public List<ProductDTO> getLaptops() {
+        return productService.getLaptops();
+    }
+
     @PostMapping("/get-laptop")
     public LaptopDTO getLaptop(@RequestBody Long id) {
         return productService.getLaptop(id);
@@ -151,6 +156,11 @@ public class ProductController {
     @PostMapping("update-product-stock")
     void updateProductStock(@RequestBody UpdateProductStock updateProductStock) {
         productService.updateStock(updateProductStock);
+    }
+
+    @PostMapping("remove-product")
+    void removeProduct(@RequestBody RemoveProductDTO removeProductDTO) {
+        productService.removeProduct(removeProductDTO);
     }
 
     @PostMapping("/save-storage")

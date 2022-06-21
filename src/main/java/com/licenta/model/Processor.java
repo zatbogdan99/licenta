@@ -33,4 +33,5 @@ public class Processor implements Serializable {
     @JsonBackReference
     private Blob photo;
     private Long stock;
+    private Long price;
 }

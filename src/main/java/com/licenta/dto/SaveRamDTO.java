@@ -15,5 +15,6 @@ public class SaveRamDTO {
     private String format;
     private Long forLaptop;
     private Long stock;
+    private Long price;
     private String[] photos;
 }

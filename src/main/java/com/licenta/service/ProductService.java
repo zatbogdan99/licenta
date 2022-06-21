@@ -613,6 +613,29 @@ public class ProductService {
         return productDTOS;
     }
 
+    public List<ProductDTO> getLaptops() {
+        List<Laptop> laptops = laptopRepository.findAll();
+        List<ProductDTO> productDTOS = new ArrayList<>();
+
+        laptops.forEach(laptop -> {
+            LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
+
+            if (laptopDTO.getPhoto() != null) {
+                byte[] imageByte = new byte[0];
+                try {
+                    imageByte = laptop.getPhoto().getBinaryStream().readAllBytes();
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                laptopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+            }
+
+            productDTOS.add(LaptopDTO.toProduct(laptopDTO));
+        });
+
+        return productDTOS;
+    }
+
     public PhotosDto getPhotos(PhotosModelDto photosModelDto) {
         Set<Photos> photos = photosRepository.findAllByProductIdAndProductType(photosModelDto.getId(), photosModelDto.getProductType());
         PhotosDto photosDto = new PhotosDto();
@@ -672,6 +695,32 @@ public class ProductService {
                 Motherboard motherboard = motherboardRepository.getById(updateProductStock.getSelectedProduct());
                 motherboard.setStock(updateProductStock.getValue());
                 break;
+            }
+        }
+    }
+
+    public void removeProduct(RemoveProductDTO removeProductDTO) {
+        switch (removeProductDTO.getProductType()) {
+            case "Laptop" -> {
+                laptopRepository.deleteById(removeProductDTO.getId());
+            }
+            case "Desktop" -> {
+                desktopRepository.deleteById(removeProductDTO.getId());
+            }
+            case "GraphicsCard" -> {
+                graphicsCardRepository.deleteById(removeProductDTO.getId());
+            }
+            case "Processor" -> {
+                processorRepository.deleteById(removeProductDTO.getId());
+            }
+            case "RAM" -> {
+                ramRepository.deleteById(removeProductDTO.getId());
+            }
+            case "Storage" -> {
+                storageRepository.deleteById(removeProductDTO.getId());
+            }
+            case "Motherboard" -> {
+                motherboardRepository.deleteById(removeProductDTO.getId());
             }
         }
     }

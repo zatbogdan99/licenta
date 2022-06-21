@@ -24,4 +24,5 @@ public class Storage {
     @JsonBackReference
     private Blob photo;
     private Long stock;
+    private Long price;
 }

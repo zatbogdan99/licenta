@@ -17,6 +17,7 @@ public class RamDTO {
     private Long forLaptop;
     private String photo;
     private Long stock;
+    private Long price;
 
     public static ProductDTO toProduct(RamDTO ramDTO) {
         ProductDTO productDTO = new ProductDTO();
@@ -26,6 +27,7 @@ public class RamDTO {
         productDTO.setId(ramDTO.getId());
         productDTO.setPhoto(ramDTO.getPhoto());
         productDTO.setStock(ramDTO.getStock());
+        productDTO.setPrice(ramDTO.getPrice());
 
         return productDTO;
     }
