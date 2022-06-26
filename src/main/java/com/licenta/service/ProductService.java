@@ -208,7 +208,18 @@ public class ProductService {
         List<Processor> processors = processorRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
 
-        processors.forEach(processor -> {
+        processors.stream().filter(processor -> {
+            if (configuratorDTO.getMotherboard() != null) {
+                Optional<Motherboard> motherboard = motherboardRepository.findById(configuratorDTO.getMotherboard());
+                if (processor.getSocket() == null) {
+                    return false;
+                } else {
+                    return motherboard.map(value -> processor.getSocket().equals(value.getCpuSocket())).orElse(true);
+                }
+            } else {
+                return true;
+            }
+        }).forEach(processor -> {
             ProcessorDTO processorDTO = modelMapper.map(processor, ProcessorDTO.class);
 
             if (processorDTO.getPhoto() != null) {
@@ -442,7 +453,7 @@ public class ProductService {
     public void saveProcessor(SaveProcessorDTO processorDTO) throws SQLException {
         Processor processor = modelMapper.map(processorDTO, Processor.class);
         String partSeparator = ",";
-        byte[] decodedBytes = new byte[0];
+        byte[] decodedBytes;
         if (processorDTO.getPhotos()[0].contains(partSeparator)) {
             String encodedImg = processorDTO.getPhotos()[0].split(partSeparator)[1];
             decodedBytes = Base64.getDecoder().decode(encodedImg);
@@ -645,9 +656,7 @@ public class ProductService {
                 byte[] imageByte = new byte[0];
                 try {
                     imageByte = photo.getPhoto().getBinaryStream().readAllBytes();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (SQLException e) {
+                } catch (IOException | SQLException e) {
                     e.printStackTrace();
                 }
                 photosList.add(Base64.getEncoder().encodeToString(imageByte));
@@ -661,40 +670,33 @@ public class ProductService {
     @Transactional
     public void updateStock(UpdateProductStock updateProductStock) {
         switch (updateProductStock.getSelectedProductType()) {
-            case "Laptop": {
+            case "Laptop" -> {
                 Laptop laptop = laptopRepository.getById(updateProductStock.getSelectedProduct());
                 laptop.setStock(updateProductStock.getValue());
-                break;
             }
-            case "Desktop": {
+            case "Desktop" -> {
                 Desktop desktop = desktopRepository.getById(updateProductStock.getSelectedProduct());
                 desktop.setStock(updateProductStock.getValue());
-                break;
             }
-            case "GraphicsCard": {
+            case "GraphicsCard" -> {
                 GraphicsCard graphicsCard = graphicsCardRepository.getById(updateProductStock.getSelectedProduct());
                 graphicsCard.setStock(updateProductStock.getValue());
-                break;
             }
-            case "Processor": {
+            case "Processor" -> {
                 Processor processor = processorRepository.getById(updateProductStock.getSelectedProduct());
                 processor.setStock(updateProductStock.getValue());
-                break;
             }
-            case "RAM": {
+            case "RAM" -> {
                 Ram ram = ramRepository.getById(updateProductStock.getSelectedProduct());
                 ram.setStock(updateProductStock.getValue());
-                break;
             }
-            case "Storage": {
+            case "Storage" -> {
                 Storage storage = storageRepository.getById(updateProductStock.getSelectedProduct());
                 storage.setStock(updateProductStock.getValue());
-                break;
             }
-            case "Motherboard": {
+            case "Motherboard" -> {
                 Motherboard motherboard = motherboardRepository.getById(updateProductStock.getSelectedProduct());
                 motherboard.setStock(updateProductStock.getValue());
-                break;
             }
         }
     }

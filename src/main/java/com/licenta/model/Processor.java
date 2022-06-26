@@ -34,4 +34,5 @@ public class Processor implements Serializable {
     private Blob photo;
     private Long stock;
     private Long price;
+    private Long socket;
 }
