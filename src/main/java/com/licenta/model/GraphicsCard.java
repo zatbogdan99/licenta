@@ -36,4 +36,9 @@ public class GraphicsCard implements Serializable {
     private Long price;
 
     private Long stock;
+
+    @Column(name = "INTERFACE")
+    private String graphicsCardInterface;
+
+    private Long warranty;
 }

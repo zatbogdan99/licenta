@@ -15,4 +15,5 @@ public class SaveStorageDTO {
     private Long speed;
     private Long stock;
     private String[] photos;
+    private Long price;
 }

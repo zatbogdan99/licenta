@@ -22,6 +22,7 @@ public class LaptopDTO {
     private String photo;
     private Long photosId;
     private Long stock;
+    private String additionalRamType;
 
     public static ProductDTO toProduct(LaptopDTO laptopDTO) {
         ProductDTO productDTO = new ProductDTO();

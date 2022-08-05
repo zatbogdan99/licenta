@@ -32,7 +32,7 @@ public class DesktopDTO {
         productDTO.setName(desktopDTO.getName());
         productDTO.setProductType(Utils.ProductTypes.DESKTOP.getValue());
         productDTO.setDescription(desktopDTO.getName() + " cu procesor " + desktopDTO.getProcessor().getName() +
-                ", Placa video " + desktopDTO.getGraphicsCard().getName() + ", " + desktopDTO.getRam().getTotal() + " " +
+                ", Placa video " + desktopDTO.getGraphicsCard().getName() + ", " + desktopDTO.getRam().getTotal() + " GB " +
                 desktopDTO.getRam().getType() + ", " + desktopDTO.getStorage().getType() + " " + desktopDTO.getStorage().getCapacity());
         productDTO.setId(desktopDTO.getId());
         productDTO.setPhoto(desktopDTO.getPhoto());

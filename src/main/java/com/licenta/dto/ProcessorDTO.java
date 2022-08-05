@@ -23,6 +23,7 @@ public class ProcessorDTO {
     private String photo;
     private Long stock;
     private Long price;
+    private Long warranty;
 
     public static ProductDTO toProduct(ProcessorDTO processorDTO) {
         ProductDTO productDTO = new ProductDTO();

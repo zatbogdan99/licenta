@@ -38,5 +38,21 @@ public class Laptop implements Serializable {
     @JoinColumn(name = "RAM_ID", foreignKey = @ForeignKey(name = "LAPTOP_RAM_ID_FK"))
     @JsonBackReference
     private Ram ram;
+    @Column(name = "ADDITIONAL_M2_SLOTS")
+    private Long additionalM2Slots;
+    @Column(name = "ADDITIONAL_SATA_SLOTS")
+    private Long additionalSataSlots;
+    @Column(name = "ADDITIONAL_SATA_TYPE")
+    private String additionalSataType;
+    @Column(name = "ADDITIONAL_M2_INTERFACE")
+    private String additionalM2Interface;
+    @Column(name = "ADDITIONAL_RAM_TYPE")
+    private String additionalRamType;
+    @Column(name = "ADDITIONAL_RAM_FREQUENCY")
+    private String additionalRamFrequency;
+    @Column(name = "ADDITIONAL_RAM_FORMAT")
+    private String additionalRamFormat;
+    @Column(name = "ADDITIONAL_M2_FORM_FACTOR")
+    private String additionalM2FormFactor;
     private Long stock;
 }

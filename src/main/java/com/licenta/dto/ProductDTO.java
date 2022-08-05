@@ -15,4 +15,5 @@ public class ProductDTO {
     private Long price;
     private String photo;
     private Long stock;
+    private Long forLaptop;
 }

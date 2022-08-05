@@ -10,7 +10,7 @@ public class MotherboardDTO {
     private Long id;
     private String name;
     private String format;
-    private Long cpuSocket;
+    private String cpuSocket;
     private String chipsetProducer;
     private String chipsetModel;
     private String supportedCpus;

@@ -23,6 +23,12 @@ public class ProductController {
     public List<ProductDTO> loadProducts() {
         return productService.getAllProducts();
     }
+
+    @PostMapping("get-cart-products")
+    public List<ProductDTO> getCartProducts(@RequestBody List<CartDTO> cartDTO) {
+        return productService.getCartProducts(cartDTO);
+    }
+
     @GetMapping("/get-displays")
     public List<ProductDTO> getDisplays() {
         return productService.getDisplays();

@@ -21,13 +21,14 @@ public class RamDTO {
 
     public static ProductDTO toProduct(RamDTO ramDTO) {
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setName(ramDTO.getName());
+        productDTO.setName(ramDTO.getName() + ", " + ramDTO.getTotal() + " GB");
         productDTO.setProductType(Utils.ProductTypes.RAM.getValue());
         productDTO.setDescription(ramDTO.getName() + ", " + ramDTO.getTotal() + " " + ramDTO.getType() + " " + ramDTO.getFrequency());
         productDTO.setId(ramDTO.getId());
         productDTO.setPhoto(ramDTO.getPhoto());
         productDTO.setStock(ramDTO.getStock());
         productDTO.setPrice(ramDTO.getPrice());
+        productDTO.setForLaptop(ramDTO.getForLaptop());
 
         return productDTO;
     }

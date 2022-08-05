@@ -21,4 +21,5 @@ public class SaveProcessorDTO {
     private Long stock;
     private String[] photos;
     private Long price;
+    private Long forLaptop;
 }

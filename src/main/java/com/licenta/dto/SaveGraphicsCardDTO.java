@@ -14,4 +14,7 @@ public class SaveGraphicsCardDTO {
     private String type;
     private Long stock;
     private String[] photos;
+    private Long price;
+    private Long warranty;
+    private Long forLaptop;
 }

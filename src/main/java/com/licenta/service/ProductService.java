@@ -67,6 +67,146 @@ public class ProductService {
         savePhotos(saveStorageDTO.getPhotos(), storage1.getId(), partSeparator, Utils.ProductTypes.STORAGE.getValue());
     }
 
+    public List<ProductDTO> getCartProducts(List<CartDTO> cartDTO) {
+        List<ProductDTO> productDTOS = new ArrayList<>();
+        cartDTO.forEach(dto -> {
+            switch (dto.getProductType()) {
+                case "Laptop": {
+                    Optional<Laptop> laptopOptional = laptopRepository.findById(dto.getId());
+                    if (laptopOptional.isPresent()) {
+                        Laptop laptop = laptopOptional.get();
+                        LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
+                        try {
+                            if (laptop.getPhoto() != null) {
+                                byte[] imageByte = laptop.getPhoto().getBinaryStream().readAllBytes();
+                                laptopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                            }
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                        productDTOS.add(LaptopDTO.toProduct(laptopDTO));
+                    }
+                    break;
+                }
+                case "Desktop": {
+                    Optional<Desktop> desktopOptional = desktopRepository.findById(dto.getId());
+                    if (desktopOptional.isPresent()) {
+                        Desktop desktop = desktopOptional.get();
+                        DesktopDTO desktopDTO = modelMapper.map(desktop, DesktopDTO.class);
+                        if (desktop.getPhoto() != null) {
+                            byte[] imageByte = new byte[0];
+                            try {
+                                imageByte = desktop.getPhoto().getBinaryStream().readAllBytes();
+                            } catch (IOException | SQLException e) {
+                                e.printStackTrace();
+                            }
+                            desktopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                        }
+                        productDTOS.add(DesktopDTO.toProduct(desktopDTO));
+                    }
+                    break;
+                }
+                case "Placă video":
+                case "GraphicsCard": {
+                    Optional<GraphicsCard> graphicsCardOptional = graphicsCardRepository.findById(dto.getId());
+                    if (graphicsCardOptional.isPresent()) {
+                        GraphicsCard graphicsCard = graphicsCardOptional.get();
+                        GraphicsCardDTO graphicsCardDTO = modelMapper.map(graphicsCard, GraphicsCardDTO.class);
+                        if (graphicsCard.getPhoto() != null) {
+                            byte[] imageByte = new byte[0];
+                            try {
+                                imageByte = graphicsCard.getPhoto().getBinaryStream().readAllBytes();
+                            } catch (IOException | SQLException e) {
+                                e.printStackTrace();
+                            }
+                            graphicsCardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                        }
+                        productDTOS.add(GraphicsCardDTO.toProduct(graphicsCardDTO));
+                    }
+                    break;
+                }
+                case "Procesor":
+                case "Processor": {
+                    Optional<Processor> processorOptional = processorRepository.findById(dto.getId());
+                    if (processorOptional.isPresent()) {
+                        Processor processor = processorOptional.get();
+                        ProcessorDTO processorDTO = modelMapper.map(processor, ProcessorDTO.class);
+                        if (processorDTO.getPhoto() != null) {
+                            byte[] imageByte = new byte[0];
+                            try {
+                                imageByte = processor.getPhoto().getBinaryStream().readAllBytes();
+                            } catch (IOException | SQLException e) {
+                                e.printStackTrace();
+                            }
+                            processorDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                        }
+
+                        productDTOS.add(ProcessorDTO.toProduct(processorDTO));
+                    }
+                    break;
+                }
+                case "Memorie RAM":
+                case "RAM": {
+                    Optional<Ram> ramOptional = ramRepository.findById(dto.getId());
+                    if (ramOptional.isPresent()) {
+                        Ram ram = ramOptional.get();
+                        RamDTO ramDTO = modelMapper.map(ram, RamDTO.class);
+                        if (ram.getPhoto() != null) {
+                            byte[] imageByte = new byte[0];
+                            try {
+                                imageByte = ram.getPhoto().getBinaryStream().readAllBytes();
+                            } catch (IOException | SQLException e) {
+                                e.printStackTrace();
+                            }
+                            ramDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                        }
+                        productDTOS.add(RamDTO.toProduct(ramDTO));
+                    }
+                    break;
+                }
+                case "Stocare":
+                case "Storage": {
+                    Optional<Storage> storageOptional = storageRepository.findById(dto.getId());
+                    if (storageOptional.isPresent()) {
+                        Storage storage = storageOptional.get();
+                        StorageDTO storageDTO = modelMapper.map(storage, StorageDTO.class);
+                        if (storage.getPhoto() != null) {
+                            byte[] imageByte = new byte[0];
+                            try {
+                                imageByte = storage.getPhoto().getBinaryStream().readAllBytes();
+                            } catch (IOException | SQLException e) {
+                                e.printStackTrace();
+                            }
+                            storageDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                        }
+                        productDTOS.add(StorageDTO.toProduct(storageDTO));
+                    }
+                    break;
+                }
+                case "Placă de bază":
+                case "Motherboard": {
+                    Optional<Motherboard> motherboardOptional = motherboardRepository.findById(dto.getId());
+                    if (motherboardOptional.isPresent()) {
+                        Motherboard motherboard = motherboardOptional.get();
+                        MotherboardDTO motherboardDTO = modelMapper.map(motherboard, MotherboardDTO.class);
+                        if (motherboard.getPhoto() != null) {
+                            byte[] imageByte = new byte[0];
+                            try {
+                                imageByte = motherboard.getPhoto().getBinaryStream().readAllBytes();
+                            } catch (IOException | SQLException e) {
+                                e.printStackTrace();
+                            }
+                            motherboardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                        }
+                        productDTOS.add(MotherboardDTO.toProduct(motherboardDTO));
+                    }
+                    break;
+                }
+            }
+        });
+        return productDTOS;
+    }
+
     public List<ProductDTO> getAllProducts() {
         List<Laptop> laptops = laptopRepository.getAllLaptops();
         List<GraphicsCard> graphicsCards = graphicsCardRepository.findAll();
@@ -87,7 +227,6 @@ public class ProductService {
             } catch (IOException | SQLException e) {
                 e.printStackTrace();
             }
-            System.out.println(laptopDTO);
             products.add(LaptopDTO.toProduct(laptopDTO));
         });
 
@@ -216,6 +355,8 @@ public class ProductService {
                 } else {
                     return motherboard.map(value -> processor.getSocket().equals(value.getCpuSocket())).orElse(true);
                 }
+            } else if (processor.getForLaptop() != null && processor.getForLaptop() == 1){
+                return false;
             } else {
                 return true;
             }
@@ -242,7 +383,16 @@ public class ProductService {
         List<GraphicsCard> graphicsCards = graphicsCardRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
 
-        graphicsCards.forEach(graphicsCard -> {
+        graphicsCards.stream().filter(graphicsCard -> {
+            if (configuratorDTO.getMotherboard() != null) {
+                Optional<Motherboard> motherboard = motherboardRepository.findById(configuratorDTO.getMotherboard());
+                return motherboard.map(value -> value.getGraphicalInterface().equals(graphicsCard.getGraphicsCardInterface())).orElse(false);
+            } else if (graphicsCard.getForLaptop() != null && graphicsCard.getForLaptop() ==1) {
+                return false;
+            } else {
+                return true;
+            }
+        }).forEach(graphicsCard -> {
             GraphicsCardDTO graphicsCardDTO = modelMapper.map(graphicsCard, GraphicsCardDTO.class);
 
             if (graphicsCardDTO.getPhoto() != null) {
@@ -265,7 +415,31 @@ public class ProductService {
         List<Ram> rams = ramRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
 
-        rams.forEach(ram -> {
+        rams.stream().filter(ram -> {
+            if (ram.getForLaptop() != null && ram.getForLaptop() == 1 && configuratorDTO.getLaptop() == null) {
+                return false;
+            }
+            if (configuratorDTO.getMotherboard() != null) {
+                Optional<Motherboard> motherboard = motherboardRepository.findById(configuratorDTO.getMotherboard());
+                boolean ramType = motherboard.map(value -> ram.getType().equals(value.getRamType())).orElse(false);
+                String[] frequencies = motherboard.get().getSupportedFrequencies().split("/");
+                boolean frequency = Arrays.asList(frequencies).contains(ram.getFrequency().toString());
+                return ramType && frequency;
+            } else if (configuratorDTO.getLaptop() != null) {
+                Optional<Laptop> laptop = laptopRepository.findById(configuratorDTO.getLaptop());
+                if (laptop.isPresent()) {
+                    if (laptop.get().getRam().getFrequency() != null && laptop.get().getRam().getType() != null) {
+                        boolean ramType = laptop.map(value -> ram.getType().equals(value.getAdditionalRamType())).orElse(false);
+                        boolean frequency = laptop.get().getAdditionalRamFrequency().equals(ram.getFrequency().toString());
+                        boolean isForLaptop = ram.getForLaptop() == 1;
+                        return ramType && frequency && isForLaptop;
+                    }
+                }
+            } else {
+                return true;
+            }
+            return false;
+        }).forEach(ram -> {
             RamDTO ramDTO = modelMapper.map(ram, RamDTO.class);
 
             if (ramDTO.getPhoto() != null) {
@@ -288,7 +462,40 @@ public class ProductService {
         List<Storage> storages = storageRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
 
-        storages.forEach(storage -> {
+        storages.stream().filter(storage -> {
+            if (configuratorDTO.getMotherboard() != null) {
+                Optional<Motherboard> motherboard = motherboardRepository.findById(configuratorDTO.getMotherboard());
+                if (motherboard.isPresent()) {
+                    if (storage.getStorage_interface().equals("SATA III")) {
+                        return motherboard.get().getSata3Slots() > 1;
+                    } else if (storage.getStorage_interface().equals("M.2 PCIe")) {
+                        //TODO de adaugat si ferificarea dupa form factor
+                        return motherboard.get().getM2Ports() > 1;
+                    } else {
+                        return true;
+                    }
+                } else {
+                    return true;
+                }
+            } else if (configuratorDTO.getLaptop() != null) {
+                Optional<Laptop> laptop = laptopRepository.findById(configuratorDTO.getLaptop());
+                if (laptop.isPresent()) {
+                    if (laptop.get().getAdditionalSataSlots() != null && laptop.get().getAdditionalSataSlots() > 0) {
+                        return laptop.get().getAdditionalSataType().equals(storage.getStorage_interface());
+                    } else if(laptop.get().getAdditionalM2Slots() != null && laptop.get().getAdditionalM2Slots() > 0) {
+                        if (storage.getForm_factor() != null) {
+                            return laptop.get().getAdditionalM2Interface().equals(storage.getStorage_interface()) &&
+                                    laptop.get().getAdditionalM2FormFactor().equals(storage.getForm_factor().toString());
+                        } else {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                return true;
+            }
+            return false;
+        }).forEach(storage -> {
             StorageDTO storageDTO = modelMapper.map(storage, StorageDTO.class);
 
             if (storageDTO.getPhoto() != null) {
@@ -311,7 +518,42 @@ public class ProductService {
         List<Motherboard> motherboards = motherboardRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
 
-        motherboards.forEach(motherboard -> {
+        motherboards.stream().filter(motherboard -> {
+            boolean socket = true;
+            boolean graphicsCardInterface = true;
+            boolean ramBoolean = true;
+            if (configuratorDTO.getProcessor() != null) {
+                Optional<Processor> processor = processorRepository.findById(configuratorDTO.getProcessor());
+                if (processor.isPresent()) {
+                    socket = processor.get().getSocket().equals(motherboard.getCpuSocket());
+                }
+            }
+            if (configuratorDTO.getGraphicsCard() != null) {
+                Optional<GraphicsCard> graphicsCard = graphicsCardRepository.findById(configuratorDTO.getGraphicsCard());
+                if (graphicsCard.isPresent()) {
+                    graphicsCardInterface = graphicsCard.get().getGraphicsCardInterface().equals(motherboard.getGraphicalInterface());
+                }
+            }
+            if (configuratorDTO.getRam() != null) {
+                Optional<Ram> ram = ramRepository.findById(configuratorDTO.getRam());
+                boolean ramType = ram.get().getType().equals(motherboard.getRamType());
+                String[] frequencies = motherboard.getSupportedFrequencies().split("/");
+                boolean frequency = Arrays.asList(frequencies).contains(ram.get().getFrequency().toString());
+                ramBoolean = ramType && frequency;
+            }
+            boolean storageBoolean = true;
+            if (configuratorDTO.getStorage() != null) {
+                Optional<Storage> storage = storageRepository.findById(configuratorDTO.getStorage());
+                if (storage.isPresent()) {
+                    if (storage.get().getStorage_interface().equals("SATA III")) {
+                        storageBoolean = motherboard.getSata3Slots() > 1;
+                    } else if (storage.get().getStorage_interface().equals("M.2 PCIe")) {
+                        storageBoolean = motherboard.getM2Ports() > 1;
+                    }
+                }
+            }
+            return socket && graphicsCardInterface && ramBoolean && storageBoolean;
+        }).forEach(motherboard -> {
             MotherboardDTO motherboardDTO = modelMapper.map(motherboard, MotherboardDTO.class);
 
             if (motherboardDTO.getPhoto() != null) {
@@ -431,6 +673,9 @@ public class ProductService {
         graphicsCard.setType(graphicsCardDTO.getType());
         graphicsCard.setName(graphicsCardDTO.getName());
         graphicsCard.setStock(graphicsCardDTO.getStock());
+        graphicsCard.setPrice(graphicsCardDTO.getPrice());
+        graphicsCard.setWarranty(graphicsCardDTO.getWarranty());
+        graphicsCard.setForLaptop(graphicsCardDTO.getForLaptop());
 
         String partSeparator = ",";
         byte[] decodedBytes = new byte[0];
@@ -484,8 +729,8 @@ public class ProductService {
     }
 
     public StorageDTO getStorageById(Long id) {
-        Storage storage = storageRepository.getById(id);
-        return modelMapper.map(storage, StorageDTO.class);
+        Optional<Storage> storage = storageRepository.findById(id);
+        return modelMapper.map(storage.get(), StorageDTO.class);
     }
 
     public MotherboardDTO getMotherboardById(Long id) {
@@ -528,22 +773,332 @@ public class ProductService {
 
     public List<ProductDTO> updateProducts(FilterDTO filterDTO) {
         List<Laptop> laptops = laptopRepository.getAllLaptops();
+        List<Ram> rams = ramRepository.findAll();
+        List<Storage> storages = storageRepository.findAll();
+        List<GraphicsCard> graphicsCards = graphicsCardRepository.findAll();
+        List<Processor> processors = processorRepository.findAll();
+        List<Motherboard> motherboards = motherboardRepository.findAll();
+        List<Desktop> desktops = desktopRepository.findAll();
         List<ProductDTO> products = new ArrayList<>();
 
-        laptops.stream().filter(laptop -> applyFilters(filterDTO, laptop)).forEach(laptop -> {
-            LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
-            try {
-                if (laptop.getPhoto() != null) {
-                    byte[] imageByte = laptop.getPhoto().getBinaryStream().readAllBytes();
-                    laptopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+        if (filterDTO.getProductType() != null) {
+            switch (filterDTO.getProductType()) {
+                case "Laptop": {
+                    laptops.stream().filter(laptop -> applyFilters(filterDTO, laptop)).forEach(laptop -> {
+                        LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
+                        try {
+                            if (laptop.getPhoto() != null) {
+                                byte[] imageByte = laptop.getPhoto().getBinaryStream().readAllBytes();
+                                laptopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                            }
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(laptopDTO);
+                        products.add(LaptopDTO.toProduct(laptopDTO));
+                    });
+                    break;
                 }
-            } catch (IOException | SQLException e) {
-                e.printStackTrace();
+                case "Desktop": {
+                    desktops.stream().filter(desktop -> applyDesktopFilters(filterDTO, desktop)).forEach(desktop -> {
+                        DesktopDTO desktopDTO = modelMapper.map(desktop, DesktopDTO.class);
+                        try {
+                            if (desktop.getPhoto() != null) {
+                                byte[] imageByte = desktop.getPhoto().getBinaryStream().readAllBytes();
+                                desktopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                            }
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(desktopDTO);
+                        products.add(DesktopDTO.toProduct(desktopDTO));
+                    });
+                    break;
+                }
+                case "Placă video":
+                case "GraphicsCard": {
+                    graphicsCards.stream().filter(graphicsCard -> applyGraphicsCardFilters(filterDTO, graphicsCard)).forEach(graphicsCard -> {
+                        GraphicsCardDTO graphicsCardDTO = modelMapper.map(graphicsCard, GraphicsCardDTO.class);
+                        try {
+                            if (graphicsCard.getPhoto() != null) {
+                                byte[] imageByte = graphicsCard.getPhoto().getBinaryStream().readAllBytes();
+                                graphicsCardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                            }
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(graphicsCardDTO);
+                        products.add(GraphicsCardDTO.toProduct(graphicsCardDTO));
+                    });
+                    break;
+                }
+                case "Procesor":
+                case "Processor": {
+                    processors.stream().filter(processor -> applyProcessorFilters(filterDTO, processor)).forEach(processor -> {
+                        ProcessorDTO processorDTO = modelMapper.map(processor, ProcessorDTO.class);
+                        try {
+                            if (processor.getPhoto() != null) {
+                                byte[] imageByte = processor.getPhoto().getBinaryStream().readAllBytes();
+                                processorDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                            }
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(processorDTO);
+                        products.add(ProcessorDTO.toProduct(processorDTO));
+                    });
+                    break;
+                }
+                case "Memorie RAM":
+                case "RAM": {
+                    rams.stream().filter(ram -> applyRamFilters(filterDTO, ram)).forEach(ram -> {
+                        RamDTO ramDTO = modelMapper.map(ram, RamDTO.class);
+                        try {
+                            if (ram.getPhoto() != null) {
+                                byte[] imageByte = ram.getPhoto().getBinaryStream().readAllBytes();
+                                ramDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                            }
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(ramDTO);
+                        products.add(RamDTO.toProduct(ramDTO));
+                    });
+                    break;
+                }
+                case "Stocare":
+                case "Storage": {
+                    storages.stream().filter(storage -> applyStorageFilters(filterDTO, storage)).forEach(storage -> {
+                        StorageDTO storageDTO = modelMapper.map(storage, StorageDTO.class);
+                        try {
+                            if (storage.getPhoto() != null) {
+                                byte[] imageByte = storage.getPhoto().getBinaryStream().readAllBytes();
+                                storageDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                            }
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(storageDTO);
+                        products.add(StorageDTO.toProduct(storageDTO));
+                    });
+                    break;
+                }
+                case "Placă de bază":
+                case "Motherboard": {
+                    motherboards.stream().filter(motherboard -> applyMotherboardFilters(filterDTO, motherboard)).forEach(motherboard -> {
+                        MotherboardDTO motherboardDTO = modelMapper.map(motherboard, MotherboardDTO.class);
+                        try {
+                            if (motherboard.getPhoto() != null) {
+                                byte[] imageByte = motherboard.getPhoto().getBinaryStream().readAllBytes();
+                                motherboardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                            }
+                        } catch (IOException | SQLException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(motherboardDTO);
+                        products.add(MotherboardDTO.toProduct(motherboardDTO));
+                    });
+                    break;
+                }
             }
-            System.out.println(laptopDTO);
-            products.add(LaptopDTO.toProduct(laptopDTO));
-        });
+        } else {
+            laptops.stream().filter(laptop -> applyFilters(filterDTO, laptop)).forEach(laptop -> {
+                LaptopDTO laptopDTO = modelMapper.map(laptop, LaptopDTO.class);
+                try {
+                    if (laptop.getPhoto() != null) {
+                        byte[] imageByte = laptop.getPhoto().getBinaryStream().readAllBytes();
+                        laptopDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                    }
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(laptopDTO);
+                products.add(LaptopDTO.toProduct(laptopDTO));
+            });
+            graphicsCards.stream().filter(graphicsCard -> applyGraphicsCardFilters(filterDTO, graphicsCard)).forEach(graphicsCard -> {
+                GraphicsCardDTO graphicsCardDTO = modelMapper.map(graphicsCard, GraphicsCardDTO.class);
+                try {
+                    if (graphicsCard.getPhoto() != null) {
+                        byte[] imageByte = graphicsCard.getPhoto().getBinaryStream().readAllBytes();
+                        graphicsCardDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                    }
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(graphicsCardDTO);
+                products.add(GraphicsCardDTO.toProduct(graphicsCardDTO));
+            });
+            processors.stream().filter(processor -> applyProcessorFilters(filterDTO, processor)).forEach(processor -> {
+                ProcessorDTO processorDTO = modelMapper.map(processor, ProcessorDTO.class);
+                try {
+                    if (processor.getPhoto() != null) {
+                        byte[] imageByte = processor.getPhoto().getBinaryStream().readAllBytes();
+                        processorDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                    }
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(processorDTO);
+                products.add(ProcessorDTO.toProduct(processorDTO));
+            });
+            rams.stream().filter(ram -> applyRamFilters(filterDTO, ram)).forEach(ram -> {
+                RamDTO ramDTO = modelMapper.map(ram, RamDTO.class);
+                try {
+                    if (ram.getPhoto() != null) {
+                        byte[] imageByte = ram.getPhoto().getBinaryStream().readAllBytes();
+                        ramDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                    }
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(ramDTO);
+                products.add(RamDTO.toProduct(ramDTO));
+            });
+            storages.stream().filter(storage -> applyStorageFilters(filterDTO, storage)).forEach(storage -> {
+                StorageDTO storageDTO = modelMapper.map(storage, StorageDTO.class);
+                try {
+                    if (storage.getPhoto() != null) {
+                        byte[] imageByte = storage.getPhoto().getBinaryStream().readAllBytes();
+                        storageDTO.setPhoto(Base64.getEncoder().encodeToString(imageByte));
+                    }
+                } catch (IOException | SQLException e) {
+                    e.printStackTrace();
+                }
+                System.out.println(storageDTO);
+                products.add(StorageDTO.toProduct(storageDTO));
+            });
+        }
+
         return products;
+    }
+
+    private boolean applyDesktopFilters(FilterDTO filterDTO, Desktop desktop) {
+        if (desktop.getPrice() != null) {
+            if (desktop.getPrice() > filterDTO.getMaxRange() || desktop.getPrice() < filterDTO.getMinRange()) {
+                return false;
+            }
+        }
+        if (filterDTO.getRam() != null && filterDTO.getRam().length > 0) {
+            if (Arrays.stream(filterDTO.getRam()).noneMatch(ram -> ram.equals(desktop.getRam().getType()))) {
+                return false;
+            }
+        }
+        if (filterDTO.getMemory() != null && filterDTO.getMemory().length > 0) {
+            if (Arrays.stream(filterDTO.getMemory()).noneMatch(memory -> memory.equals(desktop.getStorage().getType()))) {
+                return false;
+            }
+        }
+        if (filterDTO.getProcessor() != null && filterDTO.getProcessor().length > 0) {
+            if (Arrays.stream(filterDTO.getProcessor()).noneMatch(processor -> processor.equals(desktop.getProcessor().getProducer()))) {
+                return false;
+            }
+        }
+        if (filterDTO.getMemoryCapacity() != null && filterDTO.getMemoryCapacity().length > 0) {
+            return Arrays.stream(filterDTO.getMemoryCapacity()).anyMatch(memoryCapacity -> memoryCapacity.equals(desktop.getStorage().getCapacity().toString()));
+        }
+        if (filterDTO.getRamCapacity() != null && filterDTO.getRamCapacity().length > 0) {
+            return Arrays.stream(filterDTO.getRamCapacity()).anyMatch(ramCapacity -> ramCapacity.equals(desktop.getRam().getTotal().toString()));
+        }
+        return true;
+    }
+
+    private boolean applyMotherboardFilters(FilterDTO filterDTO, Motherboard motherboard) {
+        if (motherboard.getPrice() != null) {
+            if (motherboard.getPrice() > filterDTO.getMaxRange() || motherboard.getPrice() < filterDTO.getMinRange()) {
+                return false;
+            }
+        }
+
+        if (filterDTO.getSelectedGraphicalInterface() != null && filterDTO.getSelectedGraphicalInterface().length > 0) {
+            if (Arrays.stream(filterDTO.getSelectedGraphicalInterface()).noneMatch(p -> p.equals(motherboard.getGraphicalInterface()))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean applyProcessorFilters(FilterDTO filterDTO, Processor processor) {
+        if (processor.getPrice() != null) {
+            if (processor.getPrice() > filterDTO.getMaxRange() || processor.getPrice() < filterDTO.getMinRange()) {
+                return false;
+            }
+        }
+
+        if (processor.getForLaptop() != null && processor.getForLaptop() == 1) {
+            return false;
+        }
+
+        if (filterDTO.getProcessor() != null && filterDTO.getProcessor().length > 0) {
+            if (Arrays.stream(filterDTO.getProcessor()).noneMatch(p -> p.equals(processor.getProducer()))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean applyGraphicsCardFilters(FilterDTO filterDTO, GraphicsCard graphicsCard) {
+        if (graphicsCard.getPrice() != null) {
+            if (graphicsCard.getPrice() > filterDTO.getMaxRange() || graphicsCard.getPrice() < filterDTO.getMinRange()) {
+                return false;
+            }
+        }
+        if (filterDTO.getSelectedVRAM() != null && filterDTO.getSelectedVRAM().length > 0) {
+            if (Arrays.stream(filterDTO.getSelectedVRAM()).noneMatch(g -> g.equals(graphicsCard.getCapacity().toString()))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean applyStorageFilters(FilterDTO filterDTO, Storage storage) {
+        if (storage.getPrice() > filterDTO.getMaxRange() || storage.getPrice() < filterDTO.getMinRange()) {
+            return false;
+        }
+
+        if (filterDTO.getMemory() != null && filterDTO.getMemory().length > 0) {
+            if (Arrays.stream(filterDTO.getMemory()).noneMatch(memory -> memory.equals(storage.getType()))) {
+                return false;
+            }
+        }
+
+        if (filterDTO.getMemoryCapacity() != null && filterDTO.getMemoryCapacity().length > 0) {
+            return Arrays.stream(filterDTO.getMemoryCapacity()).anyMatch(memoryCapacity -> memoryCapacity.equals(storage.getCapacity().toString()));
+        }
+
+        return true;
+    }
+
+    private boolean applyRamFilters(FilterDTO filterDTO, Ram ram) {
+        if (ram.getPrice() > filterDTO.getMaxRange() || ram.getPrice() < filterDTO.getMinRange()) {
+            return false;
+        }
+
+        if (filterDTO.getRam() != null && filterDTO.getRam().length > 0) {
+            if (Arrays.stream(filterDTO.getRam()).noneMatch(r -> r.equals(ram.getType()))) {
+                return false;
+            }
+        }
+
+        if (filterDTO.getSelectedRAMFrequency() != null) {
+            if (Arrays.stream(filterDTO.getSelectedRAMFrequency()).noneMatch(r -> r.equals(ram.getFrequency().toString()))) {
+                return false;
+            }
+        }
+        if (filterDTO.getRamCapacity() != null) {
+            if (Arrays.stream(filterDTO.getRamCapacity()).noneMatch(r -> r.equals(ram.getTotal().toString()))) {
+                return false;
+            }
+        }
+
+        if (filterDTO.getSelectedRAMCAS() != null) {
+            if (Arrays.stream(filterDTO.getSelectedRAMCAS()).noneMatch(r -> r.equals(ram.getFormat()))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private boolean applyFilters(FilterDTO filterDTO, Laptop laptop) {
@@ -556,7 +1111,7 @@ public class ProductService {
             }
         }
         if (filterDTO.getMemory() != null && filterDTO.getMemory().length > 0) {
-            if (Arrays.stream(filterDTO.getMemory()).noneMatch(memory -> memory.equals(laptop.getStorage()))) {
+            if (Arrays.stream(filterDTO.getMemory()).noneMatch(memory -> memory.equals(laptop.getStorage().getType()))) {
                 return false;
             }
         }
@@ -568,6 +1123,10 @@ public class ProductService {
 
         if (filterDTO.getMemoryCapacity() != null && filterDTO.getMemoryCapacity().length > 0) {
             return Arrays.stream(filterDTO.getMemoryCapacity()).anyMatch(memoryCapacity -> memoryCapacity.equals(laptop.getStorage().getCapacity().toString()));
+        }
+
+        if (filterDTO.getRamCapacity() != null && filterDTO.getRamCapacity().length > 0) {
+            return Arrays.stream(filterDTO.getRamCapacity()).anyMatch(ramCapacity -> ramCapacity.equals(laptop.getRam().getTotal().toString()));
         }
         return true;
     }
